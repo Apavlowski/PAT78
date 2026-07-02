@@ -37,7 +37,6 @@ import { ReseauRegistryView } from './components/ReseauRegistryView';
 import { UrgenceRegistryView } from './components/UrgenceRegistryView';
 import { FormationRegistryView } from './components/FormationRegistryView';
 import { SocialActivitiesTeaser } from './components/SocialActivitiesTeaser';
-import { DocumentationView } from './components/DocumentationView';
 
 // Helper to check if a date fits into the YTD period (up to June 9th)
 const isWithinYtdPeriod = (dateStr?: string) => {
@@ -161,7 +160,6 @@ export default function App() {
   const [isDtDirectRegistryViewOpen, setIsDtDirectRegistryViewOpen] = useState(false);
   const [isReseauRegistryViewOpen, setIsReseauRegistryViewOpen] = useState(false);
   const [isIntegrationOpen, setIsIntegrationOpen] = useState(false);
-  const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
 
   // Shared state for DT Direct loader entries
   const [dtDirectRows, setDtDirectRows] = useState<ParsedDtDirectRow[] | null>(() => {
@@ -1628,14 +1626,6 @@ export default function App() {
             {/* Print & Action Bar */}
             <div className="flex items-center gap-3">
               <button
-                id="btn-open-documentation"
-                onClick={() => setIsDocumentationOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-slate-750 bg-slate-100 hover:bg-slate-200 border border-slate-220 rounded-md transition cursor-pointer"
-              >
-                <FileText className="w-4 h-4 text-slate-500" />
-                Guide & Doc
-              </button>
-              <button
                 id="btn-open-integration"
                 onClick={() => setIsIntegrationOpen(true)}
                 className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-rc-red hover:bg-[#D7171E] rounded-md transition cursor-pointer shadow-xs"
@@ -2108,8 +2098,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      <DocumentationView isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
     </div>
   );
 }

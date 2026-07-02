@@ -62,7 +62,7 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guide d'Utilisateur & Spécifications - Croix-Rouge française DTUS 78</title>
+  <title>Dossier de Spécifications Techniques & Guide de Transition - Croix-Rouge française DTUS 78</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -97,20 +97,20 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
         +
       </div>
       <div>
-        <h1 class="text-xs font-black uppercase tracking-wider">Croix-Rouge française Yvelines</h1>
-        <p class="text-[10px] text-slate-400 font-medium">Guide Officiel d'Utilisation • DTUS 78</p>
+        <h1 class="text-xs font-black uppercase tracking-wider text-slate-100">Croix-Rouge française Yvelines</h1>
+        <p class="text-[10px] text-slate-400 font-medium">Projet DTUS 78 • Dossier de Spécifications Techniques</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
       <button onclick="window.print()" class="bg-red-600 hover:bg-red-700 active:scale-95 text-white font-extrabold text-xs py-2 px-4 rounded transition cursor-pointer shadow-sm">
-        Imprimer / Exporter en PDF
+        Imprimer le Dossier de Transition (PDF / Papier)
       </button>
     </div>
   </div>
 
   <div class="max-w-4xl mx-auto my-8 bg-white p-12 shadow-sm rounded-xl border border-slate-200 print:shadow-none print:border-none print:my-0 print:p-0">
     <!-- PAGE 1: COVER PAGE -->
-    <div class="flex flex-col justify-between h-[27cm] border-4 border-slate-900 p-10">
+    <div class="flex flex-col justify-between h-[26.5cm] border-4 border-slate-900 p-10">
       <div>
         <div class="flex items-center gap-4 border-b-2 border-red-600 pb-6 mb-12">
           <div class="w-12 h-12 bg-red-600 rounded flex items-center justify-center font-extrabold text-white text-3xl">
@@ -122,203 +122,321 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
           </div>
         </div>
 
-        <div class="mt-24 space-y-4">
-          <h2 class="text-4xl font-black text-slate-900 tracking-tight leading-tight">
-            Guide de l'Utilisateur &amp; Documentation Technique
-          </h2>
-          <p class="text-sm text-slate-600 font-medium max-w-2xl">
-            Application Territoriale de Pilotage d'Activité et de Dialogue Stratégique de la DTUS des Yvelines.
+        <div class="mt-20 space-y-4">
+          <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-tight uppercase">
+            Dossier de Spécifications Techniques &amp; Guide d'Utilisation
+          </h1>
+          <p class="text-sm text-slate-600 font-semibold max-w-2xl">
+            Application Territoriale de Pilotage d'Activité et de Dialogue Stratégique de la DTUS des Yvelines (78).
           </p>
+          
+          <div class="bg-slate-50 p-6 rounded-md border border-slate-200 mt-8 space-y-2 text-xs">
+            <p class="font-bold text-slate-800 uppercase text-[10px]">Statut du document : Dossier de Transition</p>
+            <p class="text-slate-600 leading-relaxed">
+              Ce livrable technique complet a été rédigé à l'attention de l'équipe de développement informatique reprenant le projet. Il regroupe l'architecture applicative, les règles de modélisation (Typescript), les formules de calcul automatisées (YTD, dimensionnement), ainsi que le plan de transition détaillé pour le déploiement sur base de données Cloud.
+            </p>
+          </div>
         </div>
       </div>
 
       <div class="border-t border-slate-200 pt-8 mt-auto flex justify-between text-[10px] text-slate-500 font-mono">
         <div>
-          <p class="font-bold text-slate-800">Éditeur :</p>
-          <p>Direction Territoriale de l'Urgence et du Secourisme (DTUS 78)</p>
+          <p class="font-bold text-slate-800">Éditeur &amp; Propriétaire :</p>
+          <p>Direction Territoriale de l'Urgence et du Secourisme des Yvelines (DTUS 78)</p>
         </div>
         <div class="text-right">
-          <p class="font-bold text-slate-800">Référence :</p>
-          <p>v2026.07 • Document de Service Officiel</p>
-          <p>Date d'édition : Juillet 2026</p>
+          <p class="font-bold text-slate-800">Projet Référence :</p>
+          <p>v2026.07-DEV • Transition &amp; Passation</p>
+          <p>Date de génération : Juillet 2026</p>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 2: INTRO -->
+    <!-- PAGE 2: SOMMAIRE -->
     <div class="page-break pt-12 space-y-6">
-      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">Sommaire &amp; Présentation Générale</h3>
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">Sommaire &amp; Vision Fonctionnelle</h3>
       
       <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-3">
-        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Sommaire</h4>
-        <ol class="list-decimal pl-6 space-y-2 font-medium text-sm text-slate-700">
-          <li>Présentation de l'Outil de Pilotage DTUS 78</li>
-          <li>Guide de Prise en Main (Sélecteur de Métier, Mode YTD, Plan Stratégique)</li>
-          <li>Fiche d'Architecture Technique (SheetJS, LocalStorage, Securité)</li>
-          <li>Spécifications des formats d'importation Excel / CSV</li>
-          <li>Foire Aux Questions &amp; Résolution des problèmes</li>
+        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Table des Matières</h4>
+        <ol class="list-decimal pl-6 space-y-2 font-semibold text-sm text-slate-700">
+          <li>Vision Fonctionnelle &amp; Contexte d'Activité (DTUS 78)</li>
+          <li>Architecture Logicielle Globale (React 18 / Vite / Sovereignty-By-Design)</li>
+          <li>Modélisation de la Base de Données (Schémas &amp; Interfaces Typescript)</li>
+          <li>Moteurs Algorithmiques de Calcul (Mode YTD, Parser de Dimensionnement, Gain DT Net)</li>
+          <li>Détail des Formats d'Importation de Fichiers (Excel, CSV)</li>
+          <li>Instructions de Reprise pour l'Équipe de Développement (Lot 2 &amp; Cloud Database)</li>
         </ol>
       </div>
 
-      <div class="space-y-4 text-sm leading-relaxed text-slate-700">
-        <h4 class="text-base font-bold text-slate-900">1. Présentation Générale &amp; Vision Fonctionnelle</h4>
+      <div class="space-y-4 text-sm leading-relaxed text-slate-700 text-justify">
+        <h4 class="text-base font-bold text-slate-900 uppercase">1. Présentation Générale &amp; Vision Métier</h4>
         <p>
-          L'application de pilotage d'activité de la <strong>DTUS Yvelines (78)</strong> est un tableau de bord décisionnel conçu pour consolider, analyser et valoriser l'activité opérationnelle liée à l'urgence, au secourisme et à la formation au sein du département des Yvelines.
+          L'application de pilotage d'activité de la <strong>DTUS Yvelines (78)</strong> est un cockpit décisionnel conçu pour consolider, analyser et valoriser l'activité opérationnelle liée aux trois grands métiers territoriaux : le Secourisme, l'Urgence et la Formation. Elle permet d'étudier l'historique sur 3 ans (2024 à 2026) pour préparer les sessions annuelles de <strong>Dialogue Stratégique</strong> avec les instances nationales et les partenaires régaliens (SDIS, SAMU, ARS, Préfecture).
         </p>
         <p>
-          Elle permet aux équipes d'encadrement départemental de disposer d'indicateurs synthétiques clairs lors des dialogues d'activité avec les partenaires (SDIS, SAMU, Préfecture) et de suivre avec précision l'avancement des grands projets territoriaux.
-        </p>
-        <p>
-          Tout le processus de calcul, de consolidation, et d'affichage est effectué 100% côté client (navigateur local), sans aucun transit ou stockage de données confidentielles sur des serveurs tiers, garantissant ainsi la totale souveraineté des données de la Croix-Rouge française.
+          <strong>Un enjeu de Souveraineté de Donnée (Sovereignty-By-Design) :</strong> Par conception, l'outil s'exécute exclusivement en local (dans le navigateur de l'utilisateur). Aucune donnée d'activité, aucune ligne d'événement, aucun identifiant n'est transmis sur un serveur externe. Tout calcul de consolidation, d'analyse statistique clinique (trauma, malaise, ACR) ou financière (reversement UL) est effectué côté client via la mémoire vive (RAM) et persistant localement via le <strong>LocalStorage</strong>.
         </p>
       </div>
     </div>
 
-    <!-- PAGE 3: USER GUIDE -->
+    <!-- PAGE 3: ARCHITECTURE LOGICIELLE GLOBALE -->
     <div class="page-break pt-12 space-y-6">
-      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">2. Guide de l'Utilisateur (Fonctionnalités Clés)</h3>
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">2. Architecture Logicielle &amp; Persistance</h3>
       
       <div class="space-y-4 text-sm leading-relaxed text-slate-700">
-        <h4 class="text-base font-bold text-slate-800 uppercase tracking-wide">A. Le Sélecteur d'Année d'Analyse et Mode YTD</h4>
+        <h4 class="text-base font-bold text-slate-800 uppercase">A. Technologies Employées</h4>
         <p>
-          Pour comparer objectivement les indicateurs de l'année en cours avec les années précédentes, l'application intègre une comparaison temporelle rigoureuse appelée <strong>Year-To-Date (YTD)</strong>.
+          L'application repose sur un environnement moderne garantissant robustesse, réactivité et typage statique rigoureux :
         </p>
         <ul class="list-disc pl-6 space-y-2">
-          <li>
-            <strong>Mode YTD Activé :</strong> Restreint l'analyse temporelle des années 2024 et 2025 uniquement aux données enregistrées <strong>avant le 9 juin</strong> de chaque année respective. Cela permet une comparaison équitable à périmètre calendaire égal avec l'année en cours (2026).
-          </li>
-          <li>
-            <strong>Mode YTD Désactivé :</strong> Affiche les années complètes consolidées à 100%.
-          </li>
+          <li><strong>Framework principal :</strong> React 18 avec l'outil d'assemblage ultra-rapide <strong>Vite</strong>.</li>
+          <li><strong>Langage :</strong> TypeScript avec typage strict activé pour toutes les interfaces d'activité.</li>
+          <li><strong>Design System :</strong> Tailwind CSS v4, permettant des animations interactives et une feuille de style d'impression optimisée pour les formats A4 standard.</li>
+          <li><strong>Librairie de Graphiques :</strong> <strong>Recharts</strong>, configuré pour tracer dynamiquement les barres, courbes cumulées et diagrammes circulaires à partir des registres.</li>
+          <li><strong>Analyseur de Fichiers :</strong> <strong>SheetJS (xlsx)</strong>, pour parser à la volée les classeurs Excel (.xlsx, .xls) et fichiers délimités (.csv).</li>
         </ul>
 
-        <h4 class="text-base font-bold text-slate-800 uppercase tracking-wide">B. Choix du Métier Opérationnel</h4>
+        <h4 class="text-base font-bold text-slate-800 uppercase mt-4">B. Clés et Structure de Persistance (LocalStorage)</h4>
         <p>
-          Toutes les fonctionnalités de l'application s'adaptent dynamiquement en fonction du métier sélectionné en haut de l'écran :
+          L'état réactif de l'application est synchronisé avec les clés de stockage locales suivantes. Les développeurs pourront s'y référer pour inspecter ou injecter des données par défaut :
         </p>
-        <ul class="list-disc pl-6 space-y-2">
-          <li><strong>Secourisme :</strong> Analyse des dispositifs prévisionnels de secours (DPS), des gardes de réseau de secours (SDIS, SAMU) et de l'activité départementale gérée en direct par la Direction Territoriale (DT).</li>
-          <li><strong>Urgence :</strong> Mobilisations de crise (Plans Orsec, hébergements d'urgence sociale, soutien aux sinistrés).</li>
-          <li><strong>Formation :</strong> Sessions d'apprentissage Grand Public (PSC1, ePSC, Gestes qui sauvent, IPSEN, Recyclages).</li>
-        </ul>
-
-        <h4 class="text-base font-bold text-slate-800 uppercase tracking-wide">C. Le Plan d'Action Territorial (Objectifs Stratégiques)</h4>
-        <p>
-          Ce module permet de suivre l'avancement concret des chantiers prioritaires du département (ex : <em>Hébergement d'Urgence Départemental, Médicalisation des DPS, Recrutement de formateurs, etc.</em>).
-          Chaque carte est modifiable interactivement (titre, statut de réalisation, pourcentage de progression globale, étapes clés), et les modifications sont enregistrées automatiquement.
-        </p>
+        <table class="w-full text-left text-xs border-collapse border border-slate-300 mt-2">
+          <thead>
+            <tr class="bg-slate-100 font-bold text-slate-800 border-b border-slate-300">
+              <th class="p-2 border border-slate-300">Clé LocalStorage</th>
+              <th class="p-2 border border-slate-300">Type JSON stocké</th>
+              <th class="p-2 border border-slate-300">Description / Rôle métier</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_dps_activities</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;ParsedDpsRow&gt;</td>
+              <td class="p-2 border border-slate-300">Registre complet des DPS (Dispositifs Prévisionnels de Secours).</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_dt_direct_activities</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;ParsedDtDirectRow&gt;</td>
+              <td class="p-2 border border-slate-300">Opérations gérées directement par l'échelon départemental (DT).</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_reseau_activities</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;ParsedReseauRow&gt;</td>
+              <td class="p-2 border border-slate-300">Gardes réseau SDIS / SAMU assurées par les secouristes des Yvelines.</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_urgence_activities</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;ParsedUrgenceRow&gt;</td>
+              <td class="p-2 border border-slate-300">Déploiements et mobilisations de crise (ex : inondations, Orsec).</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_formation_activities</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;ParsedFormationPublicRow&gt;</td>
+              <td class="p-2 border border-slate-300">Statistiques d'apprentissage des sessions grand public (PSC1, IPSEN, GQS).</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="p-2 font-mono border border-slate-300 font-bold text-red-600">cr78_strategic_goals</td>
+              <td class="p-2 font-mono border border-slate-300">Array&lt;StrategicGoal&gt;</td>
+              <td class="p-2 border border-slate-300">Plan d'action de la DTUS contenant l'avancement et le statut des objectifs.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- PAGE 4: SPECIFICATIONS IMPORTS EXCEL / CSV -->
+    <!-- PAGE 4: MODELISATION DE LA BASE DE DONNEES LOCAL -->
     <div class="page-break pt-12 space-y-6">
-      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">3. Spécifications des Formats d'Importation Excel / CSV</h3>
-      <p class="text-sm">
-        L'application de pilotage intègre des analyseurs de fichiers très robustes capables de déceler et de mapper automatiquement les en-têtes et les valeurs de colonnes. Les modèles types correspondants peuvent être téléchargés depuis l'outil d'intégration.
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">3. Modélisation de Données &amp; Typescript</h3>
+      <p class="text-sm text-slate-700">
+        Pour assurer l'intégrité des calculs, le fichier central <code>/src/types.ts</code> définit rigoureusement les structures de données. Voici les interfaces de référence pour l'intégration de nouveaux flux de données :
       </p>
 
-      <div class="space-y-6">
-        <div class="space-y-2">
-          <h4 class="text-sm font-bold text-red-600 border-l-4 border-red-600 pl-2">Format 1 : Dispositifs Prévisionnels de Secours (DPS)</h4>
-          <p class="text-xs text-slate-600">
-            Le système calcule automatiquement l'effectif des secouristes en parsant la colonne <em>Dimensionnement</em> (ex: "1 équipe et 1 binôme" = 6 secouristes).
+      <div class="space-y-4 font-mono text-[9px] bg-slate-900 text-slate-200 p-5 rounded-lg overflow-x-auto leading-relaxed">
+<pre>
+// 1. Représentation d'une ligne d'activité DPS
+export interface ParsedDpsRow {
+  ul: string;                      // Unité locale organisatrice
+  manifestation: string;           // Intitulé de l'événement couvert
+  statut: string;                  // Réalisé, Planifié, Annulé
+  debut: string;                   // Date/Heure de début (format ISO ou FR)
+  fin: string;                     // Date/Heure de fin
+  heuresDps: number;               // Volume horaire global de l'événement
+  prelevement: number;             // Quote-part prélevée (en euros)
+  tarifTheorique: number;          // Coût d'indemnisation global
+  dimensionnement: string;         // Descriptif brut textuel (ex: "1 équipe + 1 binôme")
+  secouristesEngages: number;      // Effectif de secouristes déduit par le parser
+  evac: boolean;                   // Flag indiquant si une évacuation médicale a eu lieu
+  heuresBenevolatCalculees: number;// Heures de bénévolat déduites (Durée d'opération * Effectif)
+  nbSoins: number;                 // Nombre total de gestes cliniques de premier secours
+  nbEvac: number;                  // Nombre d'évacuations réelles vers un centre hospitalier
+  nbTrauma: number;                // Cas de traumatologie clinique rencontrés
+  nbMalaise: number;               // Cas de malaises pris en charge
+  nbInconscient: number;           // Cas d'inconscience (PLS)
+  nbAcr: number;                   // Arrêts Cardio-Respiratoires (ACR)
+  medicalise: boolean;             // Présence d'un médecin ou infirmier
+}
+
+// 2. Représentation d'une garde de Réseau de Secours (SDIS / SAMU)
+export interface ParsedReseauRow {
+  date: string;                    // Date de la garde
+  duree: number;                   // Durée d'astreinte en heures
+  secouristesEngages: number;      // Effectif réglementaire (ambulance = 4)
+  heuresBenevolat: number;         // Heures bénévolat cumulées (calculé : duree * 4)
+}
+
+// 3. Objectif Stratégique du Plan d'Action Territorial
+export interface StrategicGoal {
+  id: string;                      // Identifiant unique
+  category: 'secourisme' | 'urgence' | 'formation';
+  title: string;                   // Titre de l'objectif
+  description: string;             // Explications contextuelles
+  type: 'quantitatif' | 'qualitatif';
+  target: string;                  // Cible textuelle ou jalons
+  startValue: number;              // Valeur initiale au lancement (2024)
+  currentValue: number;            // Valeur mesurée à l'instant T (2026)
+  targetValue: number;             // Valeur cible attendue à horizon 2029
+  unit?: string;                   // Unité de mesure optionnelle (%, effectif, etc.)
+  statusText: string;              // Statut textuel synthétique
+  progress: number;                // Pourcentage global de progression (0 à 100)
+  fourYearHorizon: string;         // Horizon temporel
+}
+</pre>
+      </div>
+    </div>
+
+    <!-- PAGE 5: MOTEURS ALGORITHMIQUES DE CALCUL -->
+    <div class="page-break pt-12 space-y-6">
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">4. Moteurs Algorithmiques de Calcul Clés</h3>
+      <p class="text-sm text-slate-700 text-justify">
+        L'application intègre des modules algorithmiques de calcul automatique qui convertissent les données d'importation brutes en indicateurs décisionnels fiables. Deux moteurs sont cruciaux pour la cohérence des rapports :
+      </p>
+
+      <div class="space-y-4 text-xs">
+        {/* ALGORITHME YTD */}
+        <div class="bg-slate-50 p-5 rounded border border-slate-200">
+          <h4 class="text-xs font-bold text-slate-900 uppercase">A. Algorithme de Comparaison Temporelle "Year-To-Date" (YTD)</h4>
+          <p class="mt-1 leading-relaxed text-slate-650">
+            Afin de ne pas comparer de manière inéquitable les années pleines consolidées de 2024 et 2025 avec l'année en cours (2026) qui n'est que partiellement saisie, l'application applique un filtrage calendaire strict lorsqu'elle est en mode YTD :
           </p>
-          <table class="w-full text-left text-xs border-collapse border border-slate-300">
+          <div class="bg-white p-3 rounded border border-slate-200 font-mono text-[9px] text-slate-700 mt-2 overflow-x-auto">
+<pre>
+// Seuil de comparaison calendaire (Le dialogue d'activité a lieu le 9 juin 2026)
+const YTD_CUTOFF_MONTH = 5; // Juin (indexé à 0 en JavaScript)
+const YTD_CUTOFF_DAY = 9;   // 9ème jour
+
+export const filterYTD = (activities: any[], isYtdMode: boolean, analysisYear: number) => {
+  if (!isYtdMode) return activities; // Retourne 100% des données si désactivé
+
+  return activities.filter(activity => {
+    const actYear = getYearFromDate(activity.date);
+    
+    // Si l'activité est d'une année antérieure (2024, 2025), on restreint
+    if (actYear &lt; analysisYear) {
+      const actDate = new Date(activity.date);
+      const month = actDate.getMonth();
+      const day = actDate.getDate();
+      
+      // On conserve uniquement les événements programmés avant le 9 juin de l'année concernée
+      if (month &gt; YTD_CUTOFF_MONTH || (month === YTD_CUTOFF_MONTH &amp;&amp; day &gt; YTD_CUTOFF_DAY)) {
+        return false;
+      }
+    }
+    return true;
+  });
+};
+</pre>
+          </div>
+        </div>
+
+        {/* PARSER DE DIMENSIONNEMENT */}
+        <div class="bg-slate-50 p-5 rounded border border-slate-200 mt-4">
+          <h4 class="text-xs font-bold text-slate-900 uppercase">B. Analyseur Syntaxique du Dimensionnement des DPS</h4>
+          <p class="mt-1 leading-relaxed text-slate-650">
+            Les effectifs engagés ne sont pas toujours saisis sous forme numérique. Le système parse automatiquement le texte de la colonne <em>Dimensionnement</em> pour déduire le nombre de secouristes d'après les standards opérationnels de la Croix-Rouge française :
+          </p>
+          <ul class="list-disc pl-6 mt-2 space-y-1 text-slate-700">
+            <li><strong>"Équipe" / "EQ" / "VPSP" :</strong> Détecté comme 1 équipe d'intervention de secours d'urgence, soit <strong>4 secouristes</strong>.</li>
+            <li><strong>"Binôme" / "BIN" :</strong> Détecté comme un binôme de premiers secours, soit <strong>2 secouristes</strong>.</li>
+            <li><strong>"PAPS" (Point d'Alerte et de Premiers Secours) :</strong> Détecté comme un dispositif léger, soit <strong>2 secouristes</strong>.</li>
+            <li><strong>Calcul des heures bénévoles :</strong> <code>Heures Bénévolat = (Heure Fin - Heure Début) × Secouristes Engagés</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: SPECIFICATIONS IMPORTS EXCEL / CSV -->
+    <div class="page-break pt-12 space-y-6">
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">5. Spécifications Techniques d'Importation</h3>
+      <p class="text-sm text-slate-700">
+        L'outil de chargement utilise <strong>xlsx</strong> en mode lecture purement locale. Voici la cartographie rigoureuse des en-têtes attendus par l'application pour valider et intégrer les données :
+      </p>
+
+      <div class="space-y-6 text-xs">
+        <div>
+          <h4 class="font-bold text-red-600 border-l-4 border-red-600 pl-2 uppercase">Gabarit 1 : Dispositifs Prévisionnels de Secours (DPS)</h4>
+          <table class="w-full text-left text-xs border-collapse border border-slate-300 mt-2">
             <thead>
-              <tr class="bg-slate-100 border-b border-slate-300 font-bold text-slate-700">
-                <th class="p-2 border border-slate-300">En-tête requis</th>
-                <th class="p-2 border border-slate-300">Type de donnée</th>
-                <th class="p-2 border border-slate-300">Description / Valeurs autorisées</th>
+              <tr class="bg-slate-100 font-bold border-b border-slate-300">
+                <th class="p-2 border border-slate-300">Intitulé de colonne attendu</th>
+                <th class="p-2 border border-slate-300">Type requis</th>
+                <th class="p-2 border border-slate-300">Règle de conversion &amp; Valeur par défaut</th>
               </tr>
             </thead>
             <tbody>
               <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">MANIFESTATION</td>
-                <td class="p-2 border border-slate-300">Texte</td>
-                <td class="p-2 border border-slate-300">Nom de l'événement couvert.</td>
+                <td class="p-2 border border-slate-300">Texte (Non vide)</td>
+                <td class="p-2 border border-slate-300">Identifie l'événement. Si vide, la ligne est rejetée.</td>
               </tr>
               <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">UL</td>
                 <td class="p-2 border border-slate-300">Texte</td>
-                <td class="p-2 border border-slate-300">Unité locale organisatrice (ex: Versailles).</td>
+                <td class="p-2 border border-slate-300">Unité locale organisatrice (ex: "Versailles"). Par défaut "DT Yvelines".</td>
               </tr>
               <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">Début / Fin</td>
-                <td class="p-2 border border-slate-300">Date &amp; Heure</td>
-                <td class="p-2 border border-slate-300">Format standard de date (ex: 2026-05-12 14:00).</td>
+                <td class="p-2 border border-slate-300">Date ISO/FR</td>
+                <td class="p-2 border border-slate-300">Converti en objet Date JavaScript. Utilisé pour calculer la durée de l'opération.</td>
               </tr>
               <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">Dimensionnement</td>
-                <td class="p-2 border border-slate-300">Texte</td>
-                <td class="p-2 border border-slate-300">"1 équipe", "1 binôme", "2 équipes" (analysé en effectif).</td>
+                <td class="p-2 border border-slate-300">Texte libre</td>
+                <td class="p-2 border border-slate-300">Analysé par le moteur syntaxique pour en extraire le nombre de bénévoles.</td>
               </tr>
               <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">Nb Soins / Nb évac</td>
-                <td class="p-2 border border-slate-300">Nombre entier</td>
-                <td class="p-2 border border-slate-300">Statistiques médicales et transferts hôpital.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 5: AUTRES FORMATS D'IMPORTS -->
-    <div class="page-break pt-12 space-y-6">
-      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-slate-300 pb-2">3. Spécifications d'Imports (Suite)</h3>
-      
-      <div class="space-y-6">
-        <div class="space-y-2">
-          <h4 class="text-sm font-bold text-blue-600 border-l-4 border-blue-600 pl-2">Format 2 : Gardes de Réseau SDIS (Pompiers)</h4>
-          <p class="text-xs text-slate-600">
-            Chaque ligne de garde de 12h ou 24h injecte automatiquement un volume réglementaire de 4 équipiers d'astreinte.
-          </p>
-          <table class="w-full text-left text-xs border-collapse border border-slate-300">
-            <thead>
-              <tr class="bg-slate-100 border-b border-slate-300 font-bold text-slate-700">
-                <th class="p-2 border border-slate-300">En-tête requis</th>
-                <th class="p-2 border border-slate-300">Type de donnée</th>
-                <th class="p-2 border border-slate-300">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b border-slate-200">
-                <td class="p-2 font-mono border border-slate-300 font-bold">Date</td>
-                <td class="p-2 border border-slate-300">Date</td>
-                <td class="p-2 border border-slate-300">Date de la garde (ex : 2026-01-03).</td>
-              </tr>
-              <tr>
-                <td class="p-2 font-mono border border-slate-300 font-bold">Durée de garde</td>
-                <td class="p-2 border border-slate-300">Nombre</td>
-                <td class="p-2 border border-slate-300">Durée en heures de la garde (généralement 12 ou 24).</td>
+                <td class="p-2 border border-slate-300">Entier &gt;= 0</td>
+                <td class="p-2 border border-slate-300">Si absent, valorisé par défaut à 0. Utilisé pour les statistiques cliniques.</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="space-y-2 mt-6">
-          <h4 class="text-sm font-bold text-emerald-600 border-l-4 border-emerald-600 pl-2">Format 3 : Activités Directes DT (Territoire Yvelines)</h4>
-          <p class="text-xs text-slate-600">
-            Ce registre comptabilise les opérations d'envergure départementale gérées en direct par la DT.
-          </p>
-          <table class="w-full text-left text-xs border-collapse border border-slate-300">
+        <div>
+          <h4 class="font-bold text-emerald-600 border-l-4 border-emerald-600 pl-2 uppercase">Gabarit 2 : Activités Directes de la DT</h4>
+          <table class="w-full text-left text-xs border-collapse border border-slate-300 mt-2">
             <thead>
-              <tr class="bg-slate-100 border-b border-slate-300 font-bold text-slate-700">
-                <th class="p-2 border border-slate-300">En-tête requis</th>
-                <th class="p-2 border border-slate-300">Type de donnée</th>
-                <th class="p-2 border border-slate-300">Description</th>
+              <tr class="bg-slate-100 font-bold border-b border-slate-300">
+                <th class="p-2 border border-slate-300">Intitulé de colonne attendu</th>
+                <th class="p-2 border border-slate-300">Type requis</th>
+                <th class="p-2 border border-slate-300">Description / Rôle dans la formule financière</th>
               </tr>
             </thead>
             <tbody>
               <tr class="border-b border-slate-200">
-                <td class="p-2 font-mono border border-slate-300 font-bold">MANIFESTATION</td>
-                <td class="p-2 border border-slate-300">Texte</td>
-                <td class="p-2 border border-slate-300">Nom de l'opération.</td>
+                <td class="p-2 font-mono border border-slate-300 font-bold">Tarif théorique</td>
+                <td class="p-2 border border-slate-300">Nombre (Euros)</td>
+                <td class="p-2 border border-slate-300">Devis financier global facturé par l'échelon départemental.</td>
               </tr>
-              <tr>
+              <tr class="border-b border-slate-200">
+                <td class="p-2 font-mono border border-slate-300 font-bold">Reversement UL</td>
+                <td class="p-2 border border-slate-300">Nombre (Euros)</td>
+                <td class="p-2 border border-slate-300">Part reversée à l'unité locale d'origine en compensation de ses secouristes.</td>
+              </tr>
+              <tr class="border-b border-slate-200">
                 <td class="p-2 font-mono border border-slate-300 font-bold">CA Net</td>
-                <td class="p-2 border border-slate-300">Nombre</td>
-                <td class="p-2 border border-slate-300">Gain net territorial (Calculé : Devis - Reversement - Repas).</td>
+                <td class="p-2 border border-slate-300">Nombre (Euros)</td>
+                <td class="p-2 border border-slate-300">Gain net conservé par la DT (Calculé : Devis - Reversement - Repas).</td>
               </tr>
             </tbody>
           </table>
@@ -326,42 +444,53 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
       </div>
     </div>
 
-    <!-- PAGE 6: TECHNIQUE ET FAQ -->
+    <!-- PAGE 7: PASSATION ET HANDOVER DEVELOPPEURS -->
     <div class="page-break pt-12 space-y-6">
-      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">4. Fiche Technique &amp; FAQ</h3>
-      
-      <div class="grid grid-cols-2 gap-6 text-xs text-slate-700">
-        <div class="space-y-2">
-          <h4 class="font-bold text-slate-850">Architecture de l'Application</h4>
-          <p>
-            L'application de pilotage est entièrement assemblée en <strong>React 18</strong>, <strong>TypeScript</strong> et <strong>Tailwind CSS</strong>. Elle s'exécute de façon instantanée et sécurisée sans base de données hébergée externe.
+      <h3 class="text-xl font-bold text-slate-900 border-b-2 border-red-600 pb-2">6. Plan de Transition &amp; Reprise de Code (Remise d'Outil)</h3>
+      <p class="text-sm text-slate-700 text-justify">
+        Pour l'équipe de développement reprenant le projet, voici les directives architecturales recommandées pour implémenter les évolutions futures majeures :
+      </p>
+
+      <div class="space-y-4 text-xs text-slate-700">
+        <div class="bg-slate-50 p-5 rounded border border-slate-200 space-y-2">
+          <h4 class="font-bold text-slate-900 text-xs uppercase">Étape 1 : Comment intégrer le Lot 2 (Les Activités Sociales)</h4>
+          <p class="text-slate-650 leading-relaxed">
+            Le Lot d'activité sociale (Aide alimentaire, Vestiboutique, Lutte contre l'isolement) est déjà esquissé dans les types et la structure. Pour le rendre 100% interactif :
+          </p>
+          <ol class="list-decimal pl-6 space-y-1 text-slate-600">
+            <li>Déclarer de nouvelles clés LocalStorage (ex: <code>cr78_social_activities</code>).</li>
+            <li>Modifier le sélecteur de métier principal dans <code>src/App.tsx</code> pour intégrer les métiers sociaux aux côtés de 'secourisme', 'urgence' et 'formation'.</li>
+            <li>Réutiliser le composant générique d'import en adaptant les en-têtes requis (ex: Colonnes <em>Bénéficiaires</em>, <em>Kilos distribués</em>, <em>Heures d'écoute</em>).</li>
+          </ol>
+        </div>
+
+        <div class="bg-slate-50 p-5 rounded border border-slate-200 space-y-2 mt-4">
+          <h4 class="font-bold text-slate-900 text-xs uppercase">Étape 2 : Migration vers une Base de Données Cloud (Firebase Firestore)</h4>
+          <p class="text-slate-650 leading-relaxed">
+            Si la DTUS souhaite partager ce tableau de bord en temps réel entre plusieurs cadres ou unités locales avec authentification sécurisée :
+          </p>
+          <ol class="list-decimal pl-6 space-y-1 text-slate-600">
+            <li>
+              <strong>Initialiser le SDK client :</strong> Créer un fichier <code>src/lib/firebase.ts</code> et configurer Firestore avec <code>getFirestore()</code>.
+            </li>
+            <li>
+              <strong>Remplacer le LocalStorage :</strong> Remplacer les appels de lecture/écriture du hook React (ex: <code>localStorage.setItem</code>) par des fonctions asynchrones Firestore (<code>setDoc</code>, <code>getDoc</code>) ou un écouteur temps réel (<code>onSnapshot</code>).
+            </li>
+            <li>
+              <strong>Mettre en place la Sécurité :</strong> Activer Firestore Auth pour s'assurer que seuls les emails en <code>@croix-rouge.fr</code> puissent modifier les objectifs stratégiques départementaux.
+            </li>
+          </ol>
+        </div>
+
+        <div class="border-t border-slate-200 pt-8 text-center text-xs">
+          <p class="font-bold text-slate-800">Fin du Dossier de Spécifications Techniques</p>
+          <p class="text-slate-500 mt-1">
+            Ce document constitue le livrable de référence officiel de l'application de pilotage d'activité 2026 de la DTUS 78.
+          </p>
+          <p class="text-[10px] text-slate-400 mt-4 font-mono">
+            © 2026 Croix-Rouge française • Direction Territoriale des Yvelines • Tous droits réservés.
           </p>
         </div>
-        
-        <div class="space-y-2">
-          <h4 class="font-bold text-emerald-700">Souveraineté des Données</h4>
-          <p>
-            Aucune information nominative ou confidentielle n'est transférée en ligne. Le LocalStorage sert d'espace de stockage sécurisé local.
-          </p>
-        </div>
-      </div>
-
-      <div class="border-t border-slate-200 pt-6 space-y-4 text-xs text-slate-700">
-        <h4 class="font-bold text-slate-900">5. Foire Aux Questions (FAQ)</h4>
-        <div class="space-y-3">
-          <div>
-            <p class="font-bold text-slate-850">Q: Pourquoi le bouton d'impression directe ne réagit pas ?</p>
-            <p class="text-slate-600">R: Dans certains navigateurs, l'iframe de démonstration bloque l'accès à la boîte d'impression. C'est pourquoi nous mettons à votre disposition le bouton "Télécharger le Guide complet (.html)". Ouvrez ce fichier HTML sur votre ordinateur, puis lancez l'impression pour obtenir votre PDF sans aucune contrainte !</p>
-          </div>
-          <div>
-            <p class="font-bold text-slate-850">Q: Puis-je exporter le tableau de bord principal ?</p>
-            <p class="text-slate-600">R: Oui ! Une feuille de style d'impression est intégrée sur l'ensemble de l'application. Faites Ctrl+P ou utilisez le raccourci d'impression pour générer un bilan papier ou un rapport PDF épuré.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-12 text-center text-[10px] text-slate-400 font-mono">
-        © 2026 Croix-Rouge française • Direction Territoriale des Yvelines • Tous droits réservés.
       </div>
     </div>
   </div>
@@ -968,23 +1097,29 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
               </div>
 
               <div className="mt-24 space-y-4">
-                <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                  Guide de l'Utilisateur &amp; Documentation Technique
-                </h2>
-                <p className="text-sm text-slate-600 font-medium max-w-2xl">
-                  Application Territoriale de Pilotage d'Activité et de Dialogue Stratégique de la DTUS des Yvelines.
+                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight uppercase">
+                  Dossier de Spécifications Techniques &amp; Guide d'Utilisation
+                </h1>
+                <p className="text-sm text-slate-650 font-semibold max-w-2xl">
+                  Application Territoriale de Pilotage d'Activité et de Dialogue Stratégique de la DTUS des Yvelines (78).
                 </p>
+                <div className="bg-slate-50 p-4 rounded-md border border-slate-250 mt-8">
+                  <p className="font-bold text-slate-800 uppercase text-[10px]">Statut du document : Dossier de Transmission</p>
+                  <p className="text-slate-600 mt-1">
+                    Ce document fournit aux équipes de développement informatique l'ensemble des règles métier, des structures de données (Typescript), des algorithmes clés et du plan de reprise de code requis pour maintenir, héberger ou étendre l'application territoriale.
+                  </p>
+                </div>
               </div>
             </div>
 
             <div className="border-t border-slate-200 pt-8 mt-auto flex justify-between text-[10px] text-slate-500 font-mono">
               <div>
-                <p className="font-bold text-slate-800">Éditeur :</p>
-                <p>Direction Territoriale de l'Urgence et du Secourisme (DTUS 78)</p>
+                <p className="font-bold text-slate-800">Éditeur &amp; Propriétaire :</p>
+                <p>Direction Territoriale de l'Urgence et du Secourisme des Yvelines (DTUS 78)</p>
               </div>
               <div className="text-right">
-                <p className="font-bold text-slate-800">Référence :</p>
-                <p>v2026.07 • Document de Service Officiel</p>
+                <p className="font-bold text-slate-800">Référence projet :</p>
+                <p>v2026.07-DEV • Dossier Technique de Transition</p>
                 <p>Date d'édition : Juillet 2026</p>
               </div>
             </div>
@@ -992,113 +1127,285 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
 
           {/* Page 2: SOMMAIRE & INTRODUCTION */}
           <div className="page-break pt-8 space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">Sommaire &amp; Présentation Générale</h3>
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">Sommaire &amp; Vision Fonctionnelle</h3>
             
             <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-3">
-              <h4 className="font-bold text-slate-800 text-xs">Sommaire</h4>
-              <ol className="list-decimal pl-6 space-y-2 font-medium">
-                <li>Présentation de l'Outil de Pilotage DTUS 78</li>
-                <li>Guide Fonctionnel (Sélecteur de Métier, Mode YTD, Plan Stratégique)</li>
-                <li>Fiche Technique (Formats d'Import, SheetJS, LocalStorage)</li>
-                <li>Spécifications des formats d'importation Excel / CSV</li>
-                <li>Foire Aux Questions &amp; Dépannage rapide</li>
+              <h4 className="font-bold text-slate-850 text-xs uppercase tracking-wider">Table des Matières</h4>
+              <ol className="list-decimal pl-6 space-y-1.5 font-semibold text-slate-700">
+                <li>Vision Fonctionnelle &amp; Contexte d'Activité (DTUS 78)</li>
+                <li>Architecture Logicielle Globale (React 18 / Vite / Sovereignty-By-Design)</li>
+                <li>Modélisation de la Base de Données (Schémas &amp; Interfaces Typescript)</li>
+                <li>Moteurs Algorithmiques de Calcul (Mode YTD, Parser de Dimensionnement, Gain DT Net)</li>
+                <li>Détail des Formats d'Importation de Fichiers (Excel, CSV)</li>
+                <li>Instructions de Reprise pour l'Équipe de Développement (Lot 2 &amp; Cloud Database)</li>
               </ol>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-slate-900">1. Présentation Générale &amp; Vision Fonctionnelle</h4>
+            <div className="space-y-4 text-slate-700 text-justify">
+              <h4 className="text-sm font-bold text-slate-900 uppercase">1. Présentation Générale &amp; Objectifs Métier</h4>
               <p>
-                L'application de pilotage d'activité de la <strong>DTUS Yvelines (78)</strong> est un tableau de bord décisionnel conçu pour consolider, analyser et valoriser l'activité opérationnelle liée à l'urgence, au secourisme et à la formation au sein du département des Yvelines.
+                L'application de pilotage d'activité de la <strong>DTUS Yvelines (78)</strong> est un cockpit décisionnel conçu pour consolider, analyser et valoriser l'activité opérationnelle liée aux trois grands métiers territoriaux : le Secourisme, l'Urgence et la Formation. Elle permet d'étudier l'historique sur 3 ans (2024 à 2026) pour préparer les sessions annuelles de <strong>Dialogue Stratégique</strong> avec les instances nationales et les partenaires régaliens (SDIS, SAMU, ARS, Préfecture).
               </p>
               <p>
-                Elle permet aux équipes d'encadrement départemental de disposer d'indicateurs synthétiques clairs lors des dialogues d'activité avec les partenaires (SDIS, SAMU, Préfecture) et de suivre avec précision l'avancement des grands projets territoriaux.
+                <strong>Un enjeu de Souveraineté de Donnée (Sovereignty-By-Design) :</strong> Par conception, l'outil s'exécute exclusivement en local (dans le navigateur de l'utilisateur). Aucune donnée d'activité, aucune ligne d'événement, aucun identifiant n'est transmis sur un serveur externe. Tout calcul de consolidation, d'analyse statistique clinique (trauma, malaise, ACR) ou financière (reversement UL) est effectué côté client via la mémoire vive (RAM) et persistant localement via le <strong>LocalStorage</strong>.
               </p>
             </div>
           </div>
 
-          {/* Page 3: GUIDE DE L'UTILISATEUR */}
+          {/* Page 3: ARCHITECTURE LOGICIELLE GLOBALE */}
           <div className="page-break pt-8 space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">2. Guide de l'Utilisateur (Fonctionnalités Clés)</h3>
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">2. Architecture Logicielle &amp; Persistance</h3>
             
             <div className="space-y-4">
-              <h4 className="text-sm font-bold text-slate-800">A. Le Sélecteur d'Année d'Analyse et Mode YTD</h4>
+              <h4 className="text-sm font-bold text-slate-800 uppercase">A. Technologies Employées</h4>
               <p>
-                Pour comparer objectivement les indicateurs de l'année en cours avec les années précédentes, l'application intègre une comparaison rigoureuse appelée <strong>Year-To-Date (YTD)</strong>.
+                L'application repose sur un environnement moderne garantissant robustesse, réactivité et typage statique rigoureux :
               </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  <strong>Mode YTD Activé :</strong> Restreint l'analyse temporelle des années 2024 et 2025 uniquement aux données enregistrées <strong>avant le 9 juin</strong> de chaque année respective. Cela permet une comparaison équitable à périmètre calendaire égal avec l'année en cours (2026).
-                </li>
-                <li>
-                  <strong>Mode YTD Désactivé :</strong> Affiche les années complètes consolidées à 100%.
-                </li>
+              <ul className="list-disc pl-6 space-y-1 text-slate-700">
+                <li><strong>Framework principal :</strong> React 18 avec l'outil d'assemblage ultra-rapide <strong>Vite</strong>.</li>
+                <li><strong>Langage :</strong> TypeScript avec typage strict activé pour toutes les interfaces d'activité.</li>
+                <li><strong>Design System :</strong> Tailwind CSS v4, permettant des animations interactives et une feuille de style d'impression optimisée pour les formats A4 standard.</li>
+                <li><strong>Librairie de Graphiques :</strong> <strong>Recharts</strong>, configuré pour tracer dynamiquement les barres, courbes cumulées et diagrammes circulaires à partir des registres.</li>
+                <li><strong>Analyseur de Fichiers :</strong> <strong>SheetJS (xlsx)</strong>, pour parser à la volée les classeurs Excel (.xlsx, .xls) et fichiers délimités (.csv).</li>
               </ul>
 
-              <h4 className="text-sm font-bold text-slate-800">B. Choix du Métier Opérationnel</h4>
+              <h4 className="text-sm font-bold text-slate-800 uppercase">B. Clés et Structure de Persistance (LocalStorage)</h4>
               <p>
-                Toutes les fonctionnalités de l'application s'adaptent dynamiquement en fonction du métier sélectionné en haut de l'écran :
+                L'état réactif de l'application est synchronisé avec les clés de stockage locales suivantes. Les développeurs pourront s'y référer pour inspecter ou injecter des données par défaut :
               </p>
-              <ul className="list-disc pl-6 space-y-1">
-                <li><strong>Secourisme :</strong> Analyse des dispositifs prévisionnels de secours (DPS), des gardes de réseau de secours (SDIS, SAMU) et de l'activité départementale gérée en direct par la Direction Territoriale (DT).</li>
-                <li><strong>Urgence :</strong> Mobilisations de crise (Plans Orsec, hébergements d'urgence sociale, soutien aux sinistrés).</li>
-                <li><strong>Formation :</strong> Sessions d'apprentissage Grand Public (PSC1, ePSC, Gestes qui sauvent, IPSEN, Recyclages).</li>
-              </ul>
-
-              <h4 className="text-sm font-bold text-slate-800">C. Le Plan d'Action Territorial (Objectifs Stratégiques)</h4>
-              <p>
-                Ce module permet de suivre l'avancement concret des chantiers prioritaires du département (ex : <em>Hébergement d'Urgence Départemental, Médicalisation des DPS, Recrutement de formateurs, etc.</em>).
-                Chaque carte est modifiable interactivement (titre, statut de réalisation, pourcentage de progression globale, étapes clés), et les modifications sont enregistrées automatiquement.
-              </p>
+              <table className="w-full text-left text-[9px] border-collapse border border-slate-300">
+                <thead>
+                  <tr className="bg-slate-100 font-bold text-slate-800 border-b border-slate-300">
+                    <th className="p-1.5 border border-slate-300">Clé LocalStorage</th>
+                    <th className="p-1.5 border border-slate-300">Type JSON stocké</th>
+                    <th className="p-1.5 border border-slate-300">Description / Rôle métier</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_dps_activities</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;ParsedDpsRow&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Registre complet des DPS (Dispositifs Prévisionnels de Secours).</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_dt_direct_activities</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;ParsedDtDirectRow&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Opérations gérées directement par l'échelon départemental (DT).</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_reseau_activities</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;ParsedReseauRow&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Gardes réseau SDIS / SAMU assurées par les secouristes des Yvelines.</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_urgence_activities</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;ParsedUrgenceRow&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Déploiements et mobilisations de crise (ex : inondations, Orsec).</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_formation_activities</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;ParsedFormationPublicRow&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Statistiques d'apprentissage des sessions grand public (PSC1, IPSEN, GQS).</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-1.5 font-mono border border-slate-300 font-bold">cr78_strategic_goals</td>
+                    <td className="p-1.5 font-mono border border-slate-300">Array&lt;StrategicGoal&gt;</td>
+                    <td className="p-1.5 border border-slate-300">Plan d'action de la DTUS contenant l'avancement et le statut des objectifs.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
-          {/* Page 4: SPECIFICATIONS IMPORTS EXCEL / CSV */}
+          {/* Page 4: MODELISATION DE LA BASE DE DONNEES LOCAL */}
           <div className="page-break pt-8 space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">3. Spécifications des Formats d'Importation Excel / CSV</h3>
-            <p>
-              L'application de pilotage intègre des analyseurs automatiques de classeurs capables d'extraire les données d'activité de vos fichiers. Vous pouvez télécharger des modèles types pré-configurés pour chacun des imports décrits ci-dessous directement depuis la modale d'intégration de l'application.
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">3. Modélisation de Données &amp; Typescript</h3>
+            <p className="text-slate-700">
+              Pour assurer l'intégrité des calculs, le fichier central <code className="font-bold">/src/types.ts</code> définit rigoureusement les structures de données. Voici les interfaces clés à respecter pour toute extension :
             </p>
 
-            <div className="space-y-6">
-              {/* Table DPS */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-red-600 border-l-4 border-red-600 pl-2">Format 1 : Dispositifs Prévisionnels de Secours (DPS)</h4>
-                <p className="text-[10px]">
-                  Le système parse automatiquement le texte de la colonne <em>Dimensionnement</em> pour en déduire automatiquement l'effectif engagé (ex: 2 équipes + 1 binôme = 10 secouristes).
+            <div className="space-y-4 font-mono text-[8px] bg-slate-900 text-slate-200 p-4 rounded-lg overflow-x-auto leading-tight">
+{`// 1. Représentation d'une ligne d'activité DPS (Dispositif Prévisionnel de Secours)
+export interface ParsedDpsRow {
+  ul: string;                      // Unité locale organisatrice (ex: Versailles, St-Germain...)
+  manifestation: string;           // Intitulé de l'événement couvert
+  statut: string;                  // Réalisé, Planifié, Annulé
+  debut: string;                   // Date/Heure de début (format ISO ou FR)
+  fin: string;                     // Date/Heure de fin
+  heuresDps: number;               // Volume horaire global de l'événement
+  prelevement: number;             // Quote-part prélevée (en euros)
+  tarifTheorique: number;          // Coût d'indemnisation global
+  dimensionnement: string;         // Descriptif brut textuel (ex: "1 équipe + 1 binôme")
+  secouristesEngages: number;      // Effectif de secouristes déduit par le parser
+  evac: boolean;                   // Flag indiquant si une évacuation médicale a eu lieu
+  heuresBenevolatCalculees: number;// Heures de bénévolat déduites (Durée d'opération * Effectif)
+  nbSoins: number;                 // Nombre total de gestes cliniques de premier secours
+  nbEvac: number;                  // Nombre d'évacuations réelles vers un centre hospitalier
+  nbTrauma: number;                // Cas de traumatologie clinique rencontrés
+  nbMalaise: number;               // Cas de malaises pris en charge
+  nbInconscient: number;           // Cas d'inconscience (PLS)
+  nbAcr: number;                   // Arrêts Cardio-Respiratoires (ACR / Utilisation de défibrillateur)
+  medicalise: boolean;             // Présence d'un médecin, infirmier ou VPSP médicalisé
+}
+
+// 2. Représentation d'une garde de Réseau de Secours (SDIS / SAMU)
+export interface ParsedReseauRow {
+  date: string;                    // Date calendaire de la garde
+  duree: number;                   // Durée d'astreinte en heures (généralement 12h ou 24h)
+  secouristesEngages: number;      // Effectif réglementaire (bloqué à 4 équipiers par ambulance)
+  heuresBenevolat: number;         // Heures bénévolat cumulées (calculé : duree * 4)
+}
+
+// 3. Objectif Stratégique du Plan d'Action Territorial
+export interface StrategicGoal {
+  id: string;                      // Identifiant unique
+  category: 'secourisme' | 'urgence' | 'formation'; // Thématique métier
+  title: string;                   // Titre de l'objectif
+  description: string;             // Explications contextuelles
+  type: 'quantitatif' | 'qualitatif';
+  target: string;                  // Cible textuelle ou jalons
+  startValue: number;              // Valeur initiale au lancement (2024)
+  currentValue: number;            // Valeur mesurée à l'instant T (2026)
+  targetValue: number;             // Valeur cible attendue à horizon 2029
+  unit?: string;                   // Unité de mesure optionnelle (%, effectif, etc.)
+  statusText: string;              // Statut textuel synthétique
+  progress: number;                // Pourcentage global de progression (0 à 100)
+  fourYearHorizon: string;         // Horizon temporel (ex: "2029")
+}`}
+            </div>
+          </div>
+
+          {/* Page 5: MOTEURS ALGORITHMIQUES DE CALCUL */}
+          <div className="page-break pt-8 space-y-6">
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">4. Moteurs Algorithmiques de Calcul Clés</h3>
+            <p className="text-slate-755 text-justify">
+              L'application intègre des modules algorithmiques de calcul automatique qui convertissent les données d'importation brutes en indicateurs décisionnels fiables. Trois moteurs sont cruciaux pour la cohérence des rapports :
+            </p>
+
+            <div className="space-y-4">
+              {/* ALGORITHME YTD */}
+              <div className="bg-slate-50 p-4 rounded border border-slate-250">
+                <h4 className="text-xs font-bold text-slate-900 uppercase">A. Algorithme de Comparaison Temporelle "Year-To-Date" (YTD)</h4>
+                <p className="mt-1">
+                  Afin de ne pas comparer de manière inéquitable les années pleines consolidées de 2024 et 2025 avec l'année en cours (2026) qui n'est que partiellement saisie, l'application applique un filtrage calendaire strict lorsqu'elle est en mode YTD :
                 </p>
-                <table className="w-full text-left text-[10px] border-collapse border border-slate-300">
+                <div className="bg-white p-2.5 rounded border border-slate-200 font-mono text-[8px] text-slate-700 mt-2">
+{`// Seuil de comparaison calendaire (Le dialogue d'activité a lieu le 9 juin 2026)
+const YTD_CUTOFF_MONTH = 5; // Juin (indexé à 0 en JavaScript)
+const YTD_CUTOFF_DAY = 9;   // 9ème jour
+
+export const filterYTD = (activities: any[], isYtdMode: boolean, analysisYear: number) => {
+  if (!isYtdMode) return activities; // Retourne 100% des données si désactivé
+
+  return activities.filter(activity => {
+    const actYear = getYearFromDate(activity.date);
+    
+    // Si l'activité est d'une année antérieure (2024, 2025), on restreint
+    if (actYear < analysisYear) {
+      const actDate = new Date(activity.date);
+      const month = actDate.getMonth();
+      const day = actDate.getDate();
+      
+      // On conserve uniquement les événements programmés avant le 9 juin de l'année concernée
+      if (month > YTD_CUTOFF_MONTH || (month === YTD_CUTOFF_MONTH && day > YTD_CUTOFF_DAY)) {
+        return false;
+      }
+    }
+    return true;
+  });
+};`}
+                </div>
+              </div>
+
+              {/* PARSER DE DIMENSIONNEMENT */}
+              <div className="bg-slate-50 p-4 rounded border border-slate-250">
+                <h4 className="text-xs font-bold text-slate-900 uppercase">B. Analyseur Syntaxique du Dimensionnement des DPS</h4>
+                <p className="mt-1">
+                  Les effectifs engagés ne sont pas toujours saisis sous forme numérique. Le système parse automatiquement le texte de la colonne <em>Dimensionnement</em> pour déduire le nombre de secouristes d'après les standards opérationnels de la Croix-Rouge française :
+                </p>
+                <ul className="list-disc pl-6 mt-1 space-y-1">
+                  <li><strong>"Équipe" / "EQ" / "VPSP" :</strong> Détecté comme 1 équipe d'intervention de secours d'urgence, soit <strong>4 secouristes</strong>.</li>
+                  <li><strong>"Binôme" / "BIN" :</strong> Détecté comme un binôme de premiers secours, soit <strong>2 secouristes</strong>.</li>
+                  <li><strong>"PAPS" (Point d'Alerte et de Premiers Secours) :</strong> Détecté comme un dispositif léger, soit <strong>2 secouristes</strong>.</li>
+                  <li><strong>Calcul des heures bénévoles :</strong> <code className="bg-white px-1 py-0.5 rounded border">Heures Bénévolat = (Heure Fin - Heure Début) × Secouristes Engagés</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Page 6: SPECIFICATIONS IMPORTS EXCEL / CSV */}
+          <div className="page-break pt-8 space-y-6">
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">5. Spécifications Techniques d'Importation</h3>
+            <p className="text-slate-700">
+              L'outil de chargement utilise <strong>xlsx</strong> en mode lecture purement locale. Voici la cartographie rigoureuse des en-têtes attendus par l'application pour valider et intégrer les données. Si l'un des en-têtes requis est absent, le système de validation rejette la ligne de manière sécurisée en levant une exception visualisable dans le panneau de rapport de cohérence :
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-xs font-bold text-red-600 border-l-4 border-red-600 pl-2 uppercase">Gabarit 1 : Dispositifs Prévisionnels de Secours (DPS)</h4>
+                <table className="w-full text-left text-[9px] border-collapse border border-slate-300 mt-1.5">
                   <thead>
-                    <tr className="bg-slate-100 border-b border-slate-300 font-bold">
-                      <th className="p-1.5 border border-slate-300">En-tête requis</th>
-                      <th className="p-1.5 border border-slate-300">Type de donnée</th>
-                      <th className="p-1.5 border border-slate-300">Description / Valeurs autorisées</th>
+                    <tr className="bg-slate-100 font-bold border-b border-slate-300">
+                      <th className="p-1 border border-slate-300">Intitulé de colonne attendu</th>
+                      <th className="p-1 border border-slate-300">Type requis</th>
+                      <th className="p-1 border border-slate-300">Règle de conversion &amp; Valeur par défaut</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">MANIFESTATION</td>
-                      <td className="p-1.5 border border-slate-300">Texte</td>
-                      <td className="p-1.5 border border-slate-300">Nom de l'événement couvert.</td>
+                      <td className="p-1 font-mono border border-slate-300 font-bold">MANIFESTATION</td>
+                      <td className="p-1 border border-slate-300">Texte (Non vide)</td>
+                      <td className="p-1 border border-slate-300">Identifie l'événement. Si vide, la ligne est rejetée.</td>
                     </tr>
                     <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">UL</td>
-                      <td className="p-1.5 border border-slate-300">Texte</td>
-                      <td className="p-1.5 border border-slate-300">Unité locale organisatrice (ex: Versailles, Saint-Germain).</td>
+                      <td className="p-1 font-mono border border-slate-300 font-bold">UL</td>
+                      <td className="p-1 border border-slate-300">Texte</td>
+                      <td className="p-1 border border-slate-300">Unité locale organisatrice (ex: "Versailles"). Par défaut "DT Yvelines".</td>
                     </tr>
                     <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">Début / Fin</td>
-                      <td className="p-1.5 border border-slate-300">Date &amp; Heure</td>
-                      <td className="p-1.5 border border-slate-300">Format standard de date (ex: 2026-05-12 14:00).</td>
+                      <td className="p-1 font-mono border border-slate-300 font-bold">Début / Fin</td>
+                      <td className="p-1 border border-slate-300">Date ISO/FR</td>
+                      <td className="p-1 border border-slate-300">Converti en objet Date JavaScript. Utilisé pour calculer la durée de l'opération.</td>
                     </tr>
                     <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">Dimensionnement</td>
-                      <td className="p-1.5 border border-slate-300">Texte</td>
-                      <td className="p-1.5 border border-slate-300">"1 équipe", "1 binôme", "1 équipe et 1 PAPS" (analysé en effectif).</td>
+                      <td className="p-1 font-mono border border-slate-300 font-bold">Dimensionnement</td>
+                      <td className="p-1 border border-slate-300">Texte libre</td>
+                      <td className="p-1 border border-slate-300">Analysé par le moteur syntaxique pour en extraire le nombre de bénévoles.</td>
                     </tr>
-                    <tr>
-                      <td className="p-1.5 font-mono border border-slate-300">Nb Soins / Nb évac</td>
-                      <td className="p-1.5 border border-slate-300">Nombre entier</td>
-                      <td className="p-1.5 border border-slate-300">Fiches de soins remplies ou évacuations réelles de blessés.</td>
+                    <tr className="border-b border-slate-200">
+                      <td className="p-1 font-mono border border-slate-300 font-bold">Nb Soins / Nb évac</td>
+                      <td className="p-1 border border-slate-300">Entier &gt;= 0</td>
+                      <td className="p-1 border border-slate-300">Si absent, valorisé par défaut à 0. Utilisé pour les statistiques cliniques.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-bold text-emerald-600 border-l-4 border-emerald-600 pl-2 uppercase">Gabarit 2 : Activités Directes de la DT</h4>
+                <table className="w-full text-left text-[9px] border-collapse border border-slate-300 mt-1.5">
+                  <thead>
+                    <tr className="bg-slate-100 font-bold border-b border-slate-300">
+                      <th className="p-1 border border-slate-300">Intitulé de colonne attendu</th>
+                      <th className="p-1 border border-slate-300">Type requis</th>
+                      <th className="p-1 border border-slate-300">Description / Rôle dans la formule financière</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-slate-200">
+                      <td className="p-1 font-mono border border-slate-300 font-bold">Tarif théorique</td>
+                      <td className="p-1 border border-slate-300">Nombre (Euros)</td>
+                      <td className="p-1 border border-slate-300">Devis financier global facturé par l'échelon départemental.</td>
+                    </tr>
+                    <tr className="border-b border-slate-200">
+                      <td className="p-1 font-mono border border-slate-300 font-bold">Reversement UL</td>
+                      <td className="p-1 border border-slate-300">Nombre (Euros)</td>
+                      <td className="p-1 border border-slate-300">Part reversée à l'unité locale d'origine en compensation de ses secouristes.</td>
+                    </tr>
+                    <tr className="border-b border-slate-200">
+                      <td className="p-1 font-mono border border-slate-300 font-bold">CA Net</td>
+                      <td className="p-1 border border-slate-300">Nombre (Euros)</td>
+                      <td className="p-1 border border-slate-300">Gain net conservé par la DT (Calculé : Devis - Reversement - Repas).</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1106,121 +1413,50 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ isOpen, on
             </div>
           </div>
 
-          {/* Page 5: AUTRES FORMATS D'IMPORTS */}
+          {/* Page 7: DOCUMENT DE PASSATION ET HANDOVER DEVELOPPEURS */}
           <div className="page-break pt-8 space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-slate-300 pb-2">3. Spécifications d'Imports (Suite)</h3>
-            
-            <div className="space-y-6">
-              {/* Table SDIS & DIRECT */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-blue-600 border-l-4 border-blue-600 pl-2">Format 2 : Gardes de Réseau SDIS (Pompiers)</h4>
-                <p className="text-[10px]">
-                  Chaque ligne de garde de 12h ou 24h injecte automatiquement un volume réglementaire de 4 équipiers d'astreinte (Calcul des heures bénévoles: Durée × 4).
+            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">6. Plan de Transition &amp; Reprise de Code (Remise d'Outil)</h3>
+            <p className="text-slate-755 text-justify">
+              Pour l'équipe de développement reprenant le projet, voici les directives architecturales recommandées pour implémenter les évolutions futures majeures :
+            </p>
+
+            <div className="space-y-4 text-slate-700">
+              <div className="bg-slate-50 p-4 rounded border border-slate-200 space-y-2">
+                <h4 className="font-bold text-slate-900 text-xs uppercase">Étape 1 : Comment intégrer le Lot 2 (Les Activités Sociales)</h4>
+                <p className="text-[11px]">
+                  Le Lot d'activité sociale (Aide alimentaire, Vestiboutique, Lutte contre l'isolement) est déjà esquissé dans les types et la structure. Pour le rendre 100% interactif :
                 </p>
-                <table className="w-full text-left text-[10px] border-collapse border border-slate-300">
-                  <thead>
-                    <tr className="bg-slate-100 border-b border-slate-300 font-bold">
-                      <th className="p-1.5 border border-slate-300">En-tête requis</th>
-                      <th className="p-1.5 border border-slate-300">Type de donnée</th>
-                      <th className="p-1.5 border border-slate-300">Description / Exemples</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">Date</td>
-                      <td className="p-1.5 border border-slate-300">Date</td>
-                      <td className="p-1.5 border border-slate-300">Date de la garde (ex : 2026-01-03).</td>
-                    </tr>
-                    <tr>
-                      <td className="p-1.5 font-mono border border-slate-300">Durée de garde</td>
-                      <td className="p-1.5 border border-slate-300">Nombre</td>
-                      <td className="p-1.5 border border-slate-300">Durée en heures de la garde (généralement 12 ou 24).</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <ol className="list-decimal pl-6 space-y-1 text-slate-600 text-[10px]">
+                  <li>Déclarer de nouvelles clés LocalStorage (ex: <code className="bg-white px-1">cr78_social_activities</code>).</li>
+                  <li>Modifier le sélecteur de métier principal dans <code className="bg-white px-1">src/App.tsx</code> pour intégrer les métiers sociaux aux côtés de 'secourisme', 'urgence' et 'formation'.</li>
+                  <li>Réutiliser le composant générique d'import en adaptant les en-têtes requis (ex: Colonnes <em>Bénéficiaires</em>, <em>Kilos distribués</em>, <em>Heures d'écoute</em>).</li>
+                </ol>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-emerald-600 border-l-4 border-emerald-600 pl-2">Format 3 : Activités Directes DT (Territoire Yvelines)</h4>
-                <p className="text-[10px]">
-                  Ce registre comptabilise les opérations de grande envergure pilotées en direct par l'échelon départemental.
+              <div className="bg-slate-50 p-4 rounded border border-slate-200 space-y-2">
+                <h4 className="font-bold text-slate-900 text-xs uppercase">Étape 2 : Migration vers une Base de Données Cloud (Firebase Firestore)</h4>
+                <p className="text-[11px]">
+                  Si la DTUS souhaite partager ce tableau de bord en temps réel entre plusieurs cadres ou unités locales avec authentification sécurisée :
                 </p>
-                <table className="w-full text-left text-[10px] border-collapse border border-slate-300">
-                  <thead>
-                    <tr className="bg-slate-100 border-b border-slate-300 font-bold">
-                      <th className="p-1.5 border border-slate-300">En-tête requis</th>
-                      <th className="p-1.5 border border-slate-300">Type de donnée</th>
-                      <th className="p-1.5 border border-slate-300">Description / Exemples</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">MANIFESTATION</td>
-                      <td className="p-1.5 border border-slate-300">Texte</td>
-                      <td className="p-1.5 border border-slate-300">Nom de l'opération départementale.</td>
-                    </tr>
-                    <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">Tarif théorique</td>
-                      <td className="p-1.5 border border-slate-300">Nombre (Euros)</td>
-                      <td className="p-1.5 border border-slate-300">Montant total facturé sur devis.</td>
-                    </tr>
-                    <tr className="border-b border-slate-200">
-                      <td className="p-1.5 font-mono border border-slate-300">Reversement UL</td>
-                      <td className="p-1.5 border border-slate-300">Nombre (Euros)</td>
-                      <td className="p-1.5 border border-slate-300">Part financière reversée à l'Unité Locale de renfort.</td>
-                    </tr>
-                    <tr>
-                      <td className="p-1.5 font-mono border border-slate-300">CA Net</td>
-                      <td className="p-1.5 border border-slate-300">Nombre (Euros)</td>
-                      <td className="p-1.5 border border-slate-300">Gain net conservé par la DT (Calculé : Devis - Reversement - Repas).</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <ol className="list-decimal pl-6 space-y-1 text-slate-600 text-[10px]">
+                  <li>
+                    <strong>Initialiser le SDK client :</strong> Créer un fichier <code className="bg-white px-1">src/lib/firebase.ts</code> et configurer Firestore avec <code className="bg-white px-1">getFirestore()</code>.
+                  </li>
+                  <li>
+                    <strong>Remplacer le LocalStorage :</strong> Remplacer les appels de lecture/écriture du hook React (ex: <code className="bg-white px-1">localStorage.setItem</code>) par des fonctions asynchrones Firestore (<code className="bg-white px-1">setDoc</code>, <code className="bg-white px-1">getDoc</code>) ou un écouteur temps réel (<code className="bg-white px-1">onSnapshot</code>).
+                  </li>
+                  <li>
+                    <strong>Mettre en place la Sécurité :</strong> Activer Firestore Auth pour s'assurer que seuls les emails en <code className="bg-white px-1">@croix-rouge.fr</code> puissent modifier les objectifs stratégiques départementaux.
+                  </li>
+                </ol>
               </div>
-            </div>
-          </div>
 
-          {/* Page 6: FICHE TECHNIQUE, SECURITE ET FAQ */}
-          <div className="page-break pt-8 space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 border-b-2 border-red-600 pb-2">4. Fiche Technique, Sécurité &amp; FAQ</h3>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <h4 className="font-bold text-slate-800 text-xs">Architecture Technique</h4>
-                <p className="text-[10px]">
-                  L'application est développée en <strong>React 18</strong> et <strong>TypeScript</strong>. Elle utilise <strong>Vite</strong> comme outil d'assemblage ultra-rapide. Les graphiques interactifs sont animés avec <strong>Recharts</strong>, tandis que le parsing local des classeurs Excel est géré de façon fluide par la bibliothèque <strong>SheetJS (XLSX)</strong>.
+              <div className="border-t border-slate-200 pt-6 text-center">
+                <p className="font-bold text-slate-800">Fin du Dossier Technique Territorial</p>
+                <p className="text-slate-500 text-[10px] mt-1">
+                  Ce document constitue la référence officielle de l'application de pilotage d'activité 2026 de la DTUS 78.
                 </p>
               </div>
-              
-              <div className="space-y-2">
-                <h4 className="font-bold text-emerald-700 text-xs">Confidentialité (Privacy By Design)</h4>
-                <p className="text-[10px]">
-                  <strong>Aucune donnée personnelle n'est envoyée vers un serveur externe.</strong> Les opérations de parsing, d'analyse et d'affichage sont exécutées intégralement dans la mémoire vive de votre navigateur. La sauvegarde de votre tableau de bord s'effectue localement et de manière sécurisée via le <strong>LocalStorage</strong> de votre ordinateur.
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t border-slate-200 pt-6 space-y-4">
-              <h4 className="text-sm font-bold text-slate-900">5. Foire Aux Questions (FAQ)</h4>
-              
-              <div className="space-y-3 text-[10px]">
-                <div>
-                  <p className="font-bold text-slate-800">Q: L'analyseur affiche 'Structure non conforme' lors de mon import. Pourquoi ?</p>
-                  <p className="text-slate-600">R: Vérifiez que les en-têtes de colonnes (première ligne de votre fichier Excel) correspondent exactement aux titres attendus. Pour éviter les erreurs, téléchargez le modèle type pré-configuré depuis l'interface d'intégration et collez-y vos données.</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-800">Q: Que se passe-t-il si je clique sur 'Réinitialiser la base de données' ?</p>
-                  <p className="text-slate-600">R: Ce bouton nettoie les données importées de votre LocalStorage et recharge le scénario initial de démonstration de la DTUS 78. Vos fichiers stockés sur votre ordinateur ne sont pas affectés.</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-800">Q: Comment enregistrer en PDF à partir du menu d'impression ?</p>
-                  <p className="text-slate-600">R: Une fois le dialogue d'impression ouvert, dans le champ 'Destination', sélectionnez 'Enregistrer au format PDF' ou 'Enregistrer comme PDF' à la place de votre imprimante physique locale, puis validez.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-12 text-center text-[9px] text-slate-400 font-mono">
-              © 2026 Croix-Rouge française • Direction Territoriale des Yvelines • Tous droits réservés.
             </div>
           </div>
         </div>,
