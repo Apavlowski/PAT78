@@ -27,7 +27,7 @@ import {
   Stethoscope
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { MetierStats, ParsedDpsRow, getYearFromDateString } from '../types';
+import { MetierStats, ParsedDpsRow, getYearFromDateString, formatExcelCellValue } from '../types';
 
 interface DpsLoaderProps {
   onDataImported: (newStats: MetierStats[]) => void;
@@ -291,8 +291,8 @@ export const DpsLoader: React.FC<DpsLoaderProps> = ({
           const rawUl = getCellValue(row, ulIdx, '');
           const manifestation = getCellValue(row, manifestationIdx, 'Poste de Secours indéterminé');
           const statut = getCellValue(row, statutIdx, 'Confirmé');
-          const debut = getCellValue(row, debutIdx, '');
-          const fin = getCellValue(row, finIdx, '');
+          const debut = formatExcelCellValue(row[debutIdx]);
+          const fin = formatExcelCellValue(row[finIdx] !== undefined && row[finIdx] !== null ? row[finIdx] : row[debutIdx]);
           const rawHeures = getCellNum(row, heuresIdx, 0);
           const rawPrelevement = getCellNum(row, prelevementIdx, 0);
           const rawTarif = getCellNum(row, tarifIdx, 0);

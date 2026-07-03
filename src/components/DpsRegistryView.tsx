@@ -25,7 +25,7 @@ import {
   Flame,
   Info
 } from 'lucide-react';
-import { ParsedDpsRow, MetierStats, getYearFromDateString } from '../types';
+import { ParsedDpsRow, MetierStats, getYearFromDateString, formatExcelCellValue } from '../types';
 
 interface DpsRegistryViewProps {
   isOpen: boolean;
@@ -303,17 +303,17 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
   // Helper to format date part for display in table
   const formatDatePartOnly = (dateStr?: string): string => {
     if (!dateStr) return '';
-    const trimmed = dateStr.trim();
-    const frDateMatch = trimmed.match(/^(\d{2}\/\d{2}\/\d{4})/);
+    const normalized = formatExcelCellValue(dateStr).trim();
+    const frDateMatch = normalized.match(/^(\d{2}\/\d{2}\/\d{4})/);
     if (frDateMatch) {
       return frDateMatch[1];
     }
-    const match = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (match) {
       const [_, year, month, day] = match;
       return `${day}/${month}/${year}`;
     }
-    return trimmed.split(' ')[0];
+    return normalized.split(' ')[0];
   };
 
   // Switch status inside the table dynamically (Interactive simulation)
@@ -429,8 +429,6 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
     return Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
   }, [dpsRows]);
 
-  if (!isOpen) return null;
-
   // Filter and chronological sorting (ascending by start date)
   const filteredRows = React.useMemo(() => {
     if (!dpsRows) return [];
@@ -445,10 +443,16 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
 
       const matchesUl = filterUl === 'all' || row.ul === filterUl;
       const matchesStatut = filterStatus === 'all' || row.statut === filterStatus;
+      
+      const safeManifestation = (row.manifestation || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const safeUl = (row.ul || '').toLowerCase();
+      const safeDimensionnement = (row.dimensionnement || '').toLowerCase();
+      const lowerQuery = searchQuery.toLowerCase();
+
       const matchesSearch = searchQuery === '' || 
-        row.manifestation.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
-        row.ul.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.dimensionnement.toLowerCase().includes(searchQuery.toLowerCase());
+        safeManifestation.includes(lowerQuery) ||
+        safeUl.includes(lowerQuery) ||
+        safeDimensionnement.includes(lowerQuery);
         
       return matchesUl && matchesStatut && matchesSearch && matchesPeriod;
     });
@@ -481,6 +485,8 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
   const clsMalaise = filteredRows.filter(r => !r.isIgnored).reduce((s, r) => s + r.nbMalaise, 0);
   const clsInconscients = filteredRows.filter(r => !r.isIgnored).reduce((s, r) => s + r.nbInconscient, 0);
   const clsAcr = filteredRows.filter(r => !r.isIgnored).reduce((s, r) => s + r.nbAcr, 0);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 overflow-y-auto animate-fadeIn">
@@ -774,7 +780,7 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
                             </td>
 
                             <td className="p-3 font-mono font-medium text-slate-600 whitespace-nowrap">
-                              {row.isIgnored ? '-' : formatDatePartOnly(row.debut)}
+                              {formatDatePartOnly(row.debut) || '-'}
                             </td>
 
                             <td className="p-3 font-semibold text-slate-900 max-w-[200px] truncate" title={row.manifestation}>

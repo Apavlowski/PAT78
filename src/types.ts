@@ -177,3 +177,116 @@ export const getYearFromDateString = (dateStr?: string): number => {
   return 2026;
 };
 
+// Utility to format any Excel cell date value (string, Date object, or numeric Excel serial date) to YYYY-MM-DD HH:MM
+export const formatExcelCellValue = (val: any): string => {
+  if (val === undefined || val === null) return '';
+  
+  if (val instanceof Date) {
+    const y = val.getUTCFullYear();
+    const m = String(val.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(val.getUTCDate()).padStart(2, '0');
+    const h = String(val.getUTCHours()).padStart(2, '0');
+    const mi = String(val.getUTCMinutes()).padStart(2, '0');
+    return `${y}-${m}-${d} ${h}:${mi}`;
+  }
+
+  const str = String(val).trim();
+  if (!str) return '';
+
+  const num = Number(str);
+  if (!isNaN(num) && num > 0 && /^\d+(\.\d+)?$/.test(str)) {
+    try {
+      let parsedAsSerial = '';
+      let parsedYear = 0;
+      
+      if (num < 100000) {
+        let days = Math.floor(num);
+        if (days >= 60) {
+          days--; // Excel 1900 leap year bug
+        }
+        const baseDate = new Date(Date.UTC(1899, 11, 31));
+        const msInDay = 24 * 60 * 60 * 1000;
+        const timeMs = baseDate.getTime() + days * msInDay;
+        const fractional = num - Math.floor(num);
+        const timeOfDayMs = Math.round(fractional * msInDay);
+        const date = new Date(timeMs + timeOfDayMs);
+        
+        if (!isNaN(date.getTime())) {
+          parsedYear = date.getUTCFullYear();
+          const y = parsedYear;
+          const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+          const d = String(date.getUTCDate()).padStart(2, '0');
+          const h = String(date.getUTCHours()).padStart(2, '0');
+          const mi = String(date.getUTCMinutes()).padStart(2, '0');
+          parsedAsSerial = `${y}-${m}-${d} ${h}:${mi}`;
+        }
+      }
+
+      // If the parsed year from serial date is within a realistic operational range (2010 to 2040), we accept it
+      if (parsedAsSerial && parsedYear >= 2010 && parsedYear <= 2040) {
+        return parsedAsSerial;
+      }
+
+      // If it yielded an unrealistic year (e.g. 1955), check if the integer part is a packed year format (like 20266 representing June 2026)
+      const intPartStr = String(Math.floor(num));
+      const isYearPrefixed = intPartStr.startsWith('201') || intPartStr.startsWith('202') || intPartStr.startsWith('203');
+      
+      if (isYearPrefixed) {
+        const year = parseInt(intPartStr.substring(0, 4), 10);
+        let month = 1;
+        let day = 1;
+        let validPacked = false;
+
+        if (intPartStr.length === 8) {
+          // YYYYMMDD
+          month = parseInt(intPartStr.substring(4, 6), 10);
+          day = parseInt(intPartStr.substring(6, 8), 10);
+          if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+            validPacked = true;
+          }
+        } else if (intPartStr.length === 6) {
+          // YYYYMM
+          month = parseInt(intPartStr.substring(4, 6), 10);
+          if (month >= 1 && month <= 12) {
+            validPacked = true;
+          }
+        } else if (intPartStr.length === 5) {
+          // YYYYM (e.g. 20266 representing year 2026, month 6)
+          month = parseInt(intPartStr.substring(4, 5), 10);
+          if (month >= 1 && month <= 9) {
+            validPacked = true;
+          }
+        }
+
+        if (validPacked) {
+          // Extract time from fractional part
+          const fractional = num - Math.floor(num);
+          let hStr = '00';
+          let miStr = '00';
+          if (fractional > 0) {
+            const msInDay = 24 * 60 * 60 * 1000;
+            const timeOfDayMs = Math.round(fractional * msInDay);
+            const totalMinutes = Math.floor(timeOfDayMs / (60 * 1000));
+            const hrs = Math.floor(totalMinutes / 60);
+            const mins = totalMinutes % 60;
+            hStr = String(hrs).padStart(2, '0');
+            miStr = String(mins).padStart(2, '0');
+          }
+          const mStr = String(month).padStart(2, '0');
+          const dStr = String(day).padStart(2, '0');
+          return `${year}-${mStr}-${dStr} ${hStr}:${miStr}`;
+        }
+      }
+
+      // Fallback to parsedAsSerial if nothing else matches (even if out of reasonable year range)
+      if (parsedAsSerial) {
+        return parsedAsSerial;
+      }
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  return str;
+};
+

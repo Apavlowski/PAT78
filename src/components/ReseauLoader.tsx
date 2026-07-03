@@ -19,7 +19,7 @@ import {
   Flame
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { MetierStats, ParsedReseauRow } from '../types';
+import { MetierStats, ParsedReseauRow, formatExcelCellValue } from '../types';
 
 interface ReseauLoaderProps {
   onDataImported: (newStats: MetierStats[]) => void;
@@ -235,7 +235,7 @@ export const ReseauLoader: React.FC<ReseauLoaderProps> = ({
             continue;
           }
 
-          const date = getCellValue(row, dateIdx, '2026-01');
+          const date = formatExcelCellValue(row[dateIdx]) || '2026-01';
           const duree = getCellNum(row, dureeIdx, 0);
 
           if (duree <= 0) continue; // Skip lines with zero durations

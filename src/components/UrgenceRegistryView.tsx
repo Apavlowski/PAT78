@@ -23,16 +23,16 @@ import {
   CornerDownRight,
   HeartHandshake
 } from 'lucide-react';
-import { ParsedUrgenceRow, MetierStats, getYearFromDateString } from '../types';
+import { ParsedUrgenceRow, MetierStats, getYearFromDateString, formatExcelCellValue } from '../types';
 
 // Convert dates to human readable French format JJ/MM/AAAA
 const formatDateToFR = (dateStr?: string): string => {
   if (!dateStr) return '';
-  const trimmed = dateStr.trim();
-  if (/^\d{2}\/\d{2}\/\d{4}/.test(trimmed)) {
-    return trimmed;
+  const normalized = formatExcelCellValue(dateStr).trim();
+  if (/^\d{2}\/\d{2}\/\d{4}/.test(normalized)) {
+    return normalized;
   }
-  const match = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
   if (match) {
     const [_, year, month, day, hr, min] = match;
     const datePart = `${day}/${month}/${year}`;
@@ -41,7 +41,7 @@ const formatDateToFR = (dateStr?: string): string => {
     }
     return datePart;
   }
-  return trimmed;
+  return normalized;
 };
 
 interface UrgenceRegistryViewProps {
@@ -159,8 +159,6 @@ export const UrgenceRegistryView: React.FC<UrgenceRegistryViewProps> = ({
     return Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
   }, [urgenceRows]);
 
-  if (!isOpen) return null;
-
   const handleLoadSimulation = () => {
     setUrgenceRows(SIMULATED_URGENCE_DATA);
     setFileName("Plan_Soutien_Urgence_Yvelines_2026.xlsx");
@@ -241,25 +239,75 @@ export const UrgenceRegistryView: React.FC<UrgenceRegistryViewProps> = ({
     setTimeout(() => setFeedbackMsg(''), 3000);
   };
 
-  const filteredRows = urgenceRows ? urgenceRows.filter(row => {
-    let matchesPeriod = true;
-    if (filterPeriod !== 'all') {
-      const year = row.dateDebut ? String(getYearFromDateString(row.dateDebut)) : '';
-      matchesPeriod = year === filterPeriod;
+  const parseDateToTimestamp = (dateStr?: string): number => {
+    if (!dateStr) return 0;
+    const trimmed = dateStr.trim();
+    
+    // YYYY-MM-DD
+    const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+    if (isoMatch) {
+      const [_, year, month, day, hr, min] = isoMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
     }
 
-    const matchesSearch = searchQuery === '' || 
-      row.contexteDescription.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
-      row.agrementMobilise.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.zoneAction.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.raisons.toLowerCase().includes(searchQuery.toLowerCase());
+    // DD/MM/YYYY
+    const frMatch = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+    if (frMatch) {
+      const [_, day, month, year, hr, min] = frMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
 
-    return matchesSearch && matchesPeriod;
-  }) : [];
+    const ts = Date.parse(trimmed);
+    return isNaN(ts) ? 0 : ts;
+  };
+
+  const filteredRows = useMemo(() => {
+    if (!urgenceRows) return [];
+    const filtered = urgenceRows.filter(row => {
+      let matchesPeriod = true;
+      if (filterPeriod !== 'all') {
+        const year = row.dateDebut ? String(getYearFromDateString(row.dateDebut)) : '';
+        matchesPeriod = year === filterPeriod;
+      }
+
+      const safeContexte = (row.contexteDescription || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const safeAgrement = (row.agrementMobilise || '').toLowerCase();
+      const safeZone = (row.zoneAction || '').toLowerCase();
+      const safeRaisons = (row.raisons || '').toLowerCase();
+      const lowerQuery = searchQuery.toLowerCase();
+
+      const matchesSearch = searchQuery === '' || 
+        safeContexte.includes(lowerQuery) ||
+        safeAgrement.includes(lowerQuery) ||
+        safeZone.includes(lowerQuery) ||
+        safeRaisons.includes(lowerQuery);
+
+      return matchesSearch && matchesPeriod;
+    });
+
+    // Sort chronologically ascending
+    return filtered.sort((a, b) => {
+      return parseDateToTimestamp(a.dateDebut) - parseDateToTimestamp(b.dateDebut);
+    });
+  }, [urgenceRows, filterPeriod, searchQuery]);
 
   // Aggregates
   const totalHours = filteredRows.reduce((acc, row) => acc + (row.heuresBenevolat || 0), 0);
   const totalPec = filteredRows.reduce((acc, row) => acc + (row.nbPriseEnCharge || 0), 0);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-40 animate-fade-in print:bg-white print:p-0">

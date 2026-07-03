@@ -167,7 +167,8 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
   const filteredRows = useMemo(() => {
     if (!formationRows) return [];
     return formationRows.filter(row => {
-      const matchesSearch = row.ul.toLowerCase().includes(searchTerm.toLowerCase());
+      const safeUl = (row.ul || '').toLowerCase();
+      const matchesSearch = safeUl.includes(searchTerm.toLowerCase());
       const matchesYear = selectedYearFilter === 'all' || row.year.toString() === selectedYearFilter;
       return matchesSearch && matchesYear;
     });

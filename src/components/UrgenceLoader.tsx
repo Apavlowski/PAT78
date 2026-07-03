@@ -20,7 +20,7 @@ import {
   HeartHandshake
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { MetierStats, ParsedUrgenceRow } from '../types';
+import { MetierStats, ParsedUrgenceRow, formatExcelCellValue } from '../types';
 
 interface UrgenceLoaderProps {
   onDataImported: (newStats: MetierStats[]) => void;
@@ -345,8 +345,8 @@ export const UrgenceLoader: React.FC<UrgenceLoaderProps> = ({
             continue;
           }
 
-          const debut = getCellValue(row, startIdx, '2026-01-01');
-          const fin = getCellValue(row, endIdx, debut);
+          const debut = formatExcelCellValue(row[startIdx]) || '2026-01-01';
+          const fin = formatExcelCellValue(row[endIdx] !== undefined && row[endIdx] !== null ? row[endIdx] : row[startIdx]) || debut;
           const agrementMobilise = getCellValue(row, agrementIdx, '');
           const contexteDescription = getCellValue(row, descIdx, 'Intervention d\'urgence territoriale');
           const raisons = getCellValue(row, raisonIdx, 'Sollicitation officielle');

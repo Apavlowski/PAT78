@@ -89,8 +89,6 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
     return Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
   }, [reseauRows]);
 
-  if (!isOpen) return null;
-
   const handleLoadSimulation = () => {
     setReseauRows(SIMULATED_SDIS_DATA);
     setFileName("Gardes_SDIS_Versailles_S1_2026.xlsx");
@@ -196,9 +194,10 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
         matchesPeriod = year === filterPeriod;
       }
 
+      const safeDate = row.date || '';
       const matchesSearch = searchQuery === '' || 
-        row.date.includes(searchQuery) || 
-        formatDateToFR(row.date).includes(searchQuery);
+        safeDate.includes(searchQuery) || 
+        formatDateToFR(safeDate).includes(searchQuery);
 
       return matchesPeriod && matchesSearch;
     });
@@ -213,6 +212,8 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
   const totalGuards = filteredRows.length;
   const grandTotalDuree = filteredRows.reduce((s, r) => s + r.duree, 0);
   const grandTotalHeuresBenevolat = filteredRows.reduce((s, r) => s + r.heuresBenevolat, 0);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 overflow-y-auto animate-fadeIn">

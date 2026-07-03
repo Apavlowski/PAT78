@@ -300,8 +300,6 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
     return Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
   }, [dtDirectRows]);
 
-  if (!isOpen) return null;
-
   // Filter and sort chronologically ascending
   const filteredRows = React.useMemo(() => {
     if (!dtDirectRows) return [];
@@ -316,9 +314,11 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
         (filterMed === 'medicalise' && row.isMedicalise) ||
         (filterMed === 'non_medicalise' && !row.isMedicalise);
 
+      const safeLabel = (row.label || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const safeDevis = (row.devisCrss || '').toLowerCase();
       const matchesSearch = searchQuery === '' || 
-        row.label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
-        row.devisCrss.toLowerCase().includes(searchQuery.toLowerCase());
+        safeLabel.includes(searchQuery.toLowerCase()) ||
+        safeDevis.includes(searchQuery.toLowerCase());
 
       return matchesMed && matchesSearch && matchesPeriod;
     });
@@ -344,6 +344,8 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
   const clsMalaise = filteredRows.reduce((s, r) => s + r.nbMalaise, 0);
   const clsInconscients = filteredRows.reduce((s, r) => s + r.nbInconscient, 0);
   const clsAcr = filteredRows.reduce((s, r) => s + r.nbAcr, 0);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 overflow-y-auto animate-fadeIn">

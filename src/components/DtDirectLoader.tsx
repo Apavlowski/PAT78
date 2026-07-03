@@ -24,7 +24,7 @@ import {
   Flame
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { MetierStats, ParsedDtDirectRow } from '../types';
+import { MetierStats, ParsedDtDirectRow, formatExcelCellValue } from '../types';
 
 interface DtDirectLoaderProps {
   onDataImported: (newStats: MetierStats[]) => void;
@@ -390,7 +390,7 @@ export const DtDirectLoader: React.FC<DtDirectLoaderProps> = ({
           }
 
           const label = getCellValue(row, labelIdx, 'Poste Direct DT indéterminé');
-          const date = getCellValue(row, dateIdx, '2026-06');
+          const date = formatExcelCellValue(row[dateIdx]) || '2026-06';
           const duree = getCellNum(row, dureeIdx, 0);
           const nbSecouristes = getCellNum(row, secouristesIdx, 0);
           const devisSecours = getCellNum(row, devisSecoursIdx, 0);
