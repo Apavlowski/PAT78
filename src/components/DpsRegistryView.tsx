@@ -265,11 +265,64 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
     setTimeout(() => setFeedbackMsg(''), 4500);
   };
 
+  // Helper to parse date to timestamp for reliable chronological sorting
+  const parseDateToTimestamp = (dateStr?: string): number => {
+    if (!dateStr) return 0;
+    const trimmed = dateStr.trim();
+    
+    // YYYY-MM-DD
+    const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+    if (isoMatch) {
+      const [_, year, month, day, hr, min] = isoMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    // DD/MM/YYYY
+    const frMatch = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+    if (frMatch) {
+      const [_, day, month, year, hr, min] = frMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    const ts = Date.parse(trimmed);
+    return isNaN(ts) ? 0 : ts;
+  };
+
+  // Helper to format date part for display in table
+  const formatDatePartOnly = (dateStr?: string): string => {
+    if (!dateStr) return '';
+    const trimmed = dateStr.trim();
+    const frDateMatch = trimmed.match(/^(\d{2}\/\d{2}\/\d{4})/);
+    if (frDateMatch) {
+      return frDateMatch[1];
+    }
+    const match = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const [_, year, month, day] = match;
+      return `${day}/${month}/${year}`;
+    }
+    return trimmed.split(' ')[0];
+  };
+
   // Switch status inside the table dynamically (Interactive simulation)
-  const toggleStatut = (index: number) => {
+  const toggleStatut = (row: ParsedDpsRow) => {
     if (!dpsRows) return;
     const copied = [...dpsRows];
-    const current = copied[index];
+    const originalIndex = copied.findIndex(r => r === row);
+    if (originalIndex === -1) return;
+    const current = copied[originalIndex];
     if (current.statut === "Confirmé") {
       current.statut = "Option";
     } else {
@@ -378,25 +431,33 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
 
   if (!isOpen) return null;
 
-  // Filter application
-  const filteredRows = dpsRows ? dpsRows.filter(row => {
-    if (row.isIgnored && !showIgnored) return false;
-    
-    let matchesPeriod = true;
-    if (filterPeriod !== 'all') {
-      const year = row.debut ? String(getYearFromDateString(row.debut)) : '';
-      matchesPeriod = year === filterPeriod;
-    }
-
-    const matchesUl = filterUl === 'all' || row.ul === filterUl;
-    const matchesStatut = filterStatus === 'all' || row.statut === filterStatus;
-    const matchesSearch = searchQuery === '' || 
-      row.manifestation.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
-      row.ul.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.dimensionnement.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter and chronological sorting (ascending by start date)
+  const filteredRows = React.useMemo(() => {
+    if (!dpsRows) return [];
+    const filtered = dpsRows.filter(row => {
+      if (row.isIgnored && !showIgnored) return false;
       
-    return matchesUl && matchesStatut && matchesSearch && matchesPeriod;
-  }) : [];
+      let matchesPeriod = true;
+      if (filterPeriod !== 'all') {
+        const year = row.debut ? String(getYearFromDateString(row.debut)) : '';
+        matchesPeriod = year === filterPeriod;
+      }
+
+      const matchesUl = filterUl === 'all' || row.ul === filterUl;
+      const matchesStatut = filterStatus === 'all' || row.statut === filterStatus;
+      const matchesSearch = searchQuery === '' || 
+        row.manifestation.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
+        row.ul.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.dimensionnement.toLowerCase().includes(searchQuery.toLowerCase());
+        
+      return matchesUl && matchesStatut && matchesSearch && matchesPeriod;
+    });
+
+    // Sort chronologically ascending
+    return filtered.sort((a, b) => {
+      return parseDateToTimestamp(a.debut) - parseDateToTimestamp(b.debut);
+    });
+  }, [dpsRows, filterUl, filterStatus, filterPeriod, searchQuery, showIgnored]);
 
   // Helper for checking if row status is active of filtered set
   const isActiveRow = (r: ParsedDpsRow) => {
@@ -673,6 +734,7 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
                   <thead>
                     <tr className="bg-[#1E293B] text-slate-200 font-bold border-b border-slate-800">
                       <th className="p-3">UL / Porteur</th>
+                      <th className="p-3">Date</th>
                       <th className="p-3">Manifestations (Evénement)</th>
                       <th className="p-3 text-center">Statut (Bouton d'édition)</th>
                       <th className="p-3">Dispositif & Dimensionnement</th>
@@ -685,7 +747,7 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
                   <tbody>
                     {filteredRows.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="p-8 text-center text-slate-400 italic">
+                        <td colSpan={9} className="p-8 text-center text-slate-400 italic">
                           Aucun poste ne correspond à vos filtres actuels.
                         </td>
                       </tr>
@@ -711,6 +773,10 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
                               )}
                             </td>
 
+                            <td className="p-3 font-mono font-medium text-slate-600 whitespace-nowrap">
+                              {row.isIgnored ? '-' : formatDatePartOnly(row.debut)}
+                            </td>
+
                             <td className="p-3 font-semibold text-slate-900 max-w-[200px] truncate" title={row.manifestation}>
                               {row.manifestation}
                             </td>
@@ -723,7 +789,7 @@ export const DpsRegistryView: React.FC<DpsRegistryViewProps> = ({
                               ) : (
                                 <button
                                   type="button"
-                                  onClick={() => toggleStatut(idx)}
+                                  onClick={() => toggleStatut(row)}
                                   className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded cursor-pointer transition border hover:opacity-85 ${
                                     row.statut === 'Confirmé'
                                       ? 'text-emerald-700 bg-emerald-50 border-emerald-200'

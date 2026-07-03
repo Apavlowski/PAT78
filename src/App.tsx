@@ -74,6 +74,7 @@ export default function App() {
     const saved = localStorage.getItem('cr_selected_metier');
     return (saved as MetierType) || 'secourisme';
   });
+  const [activeDepartmentTab, setActiveDepartmentTab] = useState<'DTUS' | 'DTAS'>('DTUS');
   const [metierStats, setMetierStats] = useState<MetierStats[]>(() => {
     const saved = localStorage.getItem('cr_metier_stats');
     if (saved) {
@@ -1610,16 +1611,10 @@ export default function App() {
                   <span className="text-[10px] font-bold text-rc-red tracking-wider uppercase bg-rc-red/10 px-2 py-0.5 rounded border border-rc-red/15">
                     Yvelines - 78
                   </span>
-                  <span className="text-[10px] text-slate-500 font-medium">
-                    Code DTUS-2026
-                  </span>
                 </div>
                 <h1 className="text-base font-extrabold text-slate-900 tracking-tight">
                   Croix-Rouge française
                 </h1>
-                <p className="text-[11px] text-slate-500 font-medium">
-                  Direction Territoriale de l'Urgence et du Secourisme (DTUS 78)
-                </p>
               </div>
             </div>
 
@@ -1649,144 +1644,240 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-5 space-y-3">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Pilotage d'Activité DTUS des Yvelines
+                {activeDepartmentTab === 'DTUS' ? "Pilotage d'Activité DTUS des Yvelines" : "Pilotage d'Activité DTAS des Yvelines"}
               </h2>
               <p className="text-xs text-slate-500 font-medium">
-                Bilan global consolidé de la Direction Territoriale de l'Urgence et du Secourisme (DTUS 78).
+                {activeDepartmentTab === 'DTUS'
+                  ? "Bilan global consolidé de la Direction Territoriale de l'Urgence et du Secourisme (DTUS 78)."
+                  : "Bilan d'activité et suivi stratégique de la Direction Territoriale de l'Action Sociale (DTAS 78)."}
               </p>
             </div>
 
             {/* Quick summary numbers box */}
             <div className="lg:col-span-7 bg-slate-50/75 border border-slate-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row gap-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 print:bg-white">
-              {/* Year 2025 (Last complete year) */}
-              <div className="flex-1 space-y-3 pb-4 sm:pb-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold">Dernière Année Complète (2025)</span>
-                  <span className="text-[9px] px-2 py-0.5 bg-slate-200/70 text-slate-700 font-bold rounded">Bilan</span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Actions Secours</span>
-                    <span className="text-xl sm:text-2xl font-extrabold text-slate-800 font-mono tracking-tight">
-                      {totalActivities2025.toLocaleString('fr-FR')}
-                    </span>
+              {activeDepartmentTab === 'DTUS' ? (
+                <>
+                  {/* Year 2025 (Last complete year) */}
+                  <div className="flex-1 space-y-3 pb-4 sm:pb-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold">Dernière Année Complète (2025)</span>
+                      <span className="text-[9px] px-2 py-0.5 bg-slate-200/70 text-slate-700 font-bold rounded">Bilan</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Actions Secours</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-800 font-mono tracking-tight">
+                          {totalActivities2025.toLocaleString('fr-FR')}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Heures Bénévolat</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-800 font-mono tracking-tight">
+                          {totalHours2025.toLocaleString('fr-FR')} h
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      Données consolidées à 100%
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Heures Bénévolat</span>
-                    <span className="text-xl sm:text-2xl font-extrabold text-slate-800 font-mono tracking-tight">
-                      {totalHours2025.toLocaleString('fr-FR')} h
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                  Données consolidées à 100%
-                </div>
-              </div>
 
-              {/* Year 2026 (Year in progress) */}
-              <div className="flex-1 space-y-3 pt-4 sm:pt-0 sm:pl-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-wider text-rc-red font-extrabold">Année en cours (2026)</span>
-                  <span className="text-[9px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold rounded animate-pulse">En cours</span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Actions Secours</span>
-                    <span className="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
-                      {totalActivities2026.toLocaleString('fr-FR')}
-                    </span>
+                  {/* Year 2026 (Year in progress) */}
+                  <div className="flex-1 space-y-3 pt-4 sm:pt-0 sm:pl-6">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-wider text-rc-red font-extrabold">Année en cours (2026)</span>
+                      <span className="text-[9px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold rounded animate-pulse">En cours</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Actions Secours</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
+                          {totalActivities2026.toLocaleString('fr-FR')}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Heures Bénévolat</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-rc-red font-mono tracking-tight">
+                          {totalHours2026.toLocaleString('fr-FR')} h
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      Mise à jour : Juin 2026
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Heures Bénévolat</span>
-                    <span className="text-xl sm:text-2xl font-extrabold text-rc-red font-mono tracking-tight">
-                      {totalHours2026.toLocaleString('fr-FR')} h
-                    </span>
+                </>
+              ) : (
+                <>
+                  {/* DTAS Consolidated numbers */}
+                  <div className="flex-1 space-y-3 pb-4 sm:pb-0">
+                    <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+                      <span className="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold">Aide & Accompagnement (DTAS)</span>
+                      <span className="text-[9px] px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 font-bold rounded whitespace-nowrap">Social</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Bénéficiaires</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-850 font-mono tracking-tight">
+                          2 470
+                        </span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Bénévoles Actifs</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-850 font-mono tracking-tight">
+                          185
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      Données d'impact départemental 2026
+                    </div>
                   </div>
-                </div>
-                
-                <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  Mise à jour : Juin 2026
-                </div>
-              </div>
+
+                  <div className="flex-1 space-y-3 pt-4 sm:pt-0 sm:pl-6">
+                    <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+                      <span className="text-[10px] uppercase tracking-wider text-indigo-600 font-extrabold">Points d'Impact</span>
+                      <span className="text-[9px] px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded whitespace-nowrap">Maraudes & Épiceries</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Distribution</span>
+                        <div className="flex items-baseline gap-1 flex-wrap">
+                          <span className="text-xl sm:text-2xl font-extrabold text-indigo-600 font-mono tracking-tight">15</span>
+                          <span className="text-[11px] font-bold text-slate-500 lowercase">tonnes</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] uppercase text-slate-400 font-bold mb-1">Vestiaires</span>
+                        <div className="flex items-baseline gap-1 flex-wrap">
+                          <span className="text-xl sm:text-2xl font-extrabold text-indigo-600 font-mono tracking-tight">3</span>
+                          <span className="text-[11px] font-bold text-slate-500 lowercase">boutiques</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-2 text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      3 pôles actifs d'entraide
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
         </div>
 
+        {/* Department Tabs Selector (DTUS vs DTAS) */}
+        <div className="bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs flex gap-3 print:hidden">
+          <button
+            id="tab-dtus"
+            onClick={() => setActiveDepartmentTab('DTUS')}
+            className={`flex-1 py-3 px-4 rounded-lg font-extrabold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              activeDepartmentTab === 'DTUS'
+                ? 'bg-rc-red text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Activity className="w-4.5 h-4.5" />
+            Suivi DTUS (Urgence & Secourisme)
+          </button>
+          <button
+            id="tab-dtas"
+            onClick={() => setActiveDepartmentTab('DTAS')}
+            className={`flex-1 py-3 px-4 rounded-lg font-extrabold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              activeDepartmentTab === 'DTAS'
+                ? 'bg-rc-red text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Heart className="w-4.5 h-4.5" />
+            Suivi DTAS (Action Sociale)
+          </button>
+        </div>
 
-        {/* Section 1 : Métiers / Focus Domain metrics selection row */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <h3 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                <Layers className="w-5 h-5 text-rc-red" />
-                1. Choix du Métier Opérationnel
-              </h3>
-            </div>
-            <span className="text-xs text-slate-500 italic">Cliquez sur un métier pour charger ses analyses et objectifs</span>
-          </div>
+        {activeDepartmentTab === 'DTUS' ? (
+          <>
+            {/* Section 1 : Métiers / Focus Domain metrics selection row */}
+            <section className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <h3 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                    <Layers className="w-5 h-5 text-rc-red" />
+                    1. Choix du Métier Opérationnel
+                  </h3>
+                </div>
+                <span className="text-xs text-slate-500 italic">Cliquez sur un métier pour charger ses analyses et objectifs</span>
+              </div>
 
-          {/* Cards list for Metiers */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {metierStats.map((stats) => {
-              const ytdStats = ytdMetierStats.find(y => y.id === stats.id) || stats;
-              return (
-                <MetricCard
-                  key={stats.id}
-                  stats={ytdStats}
-                  onSelect={() => setSelectedMetier(stats.id)}
-                  isSelected={selectedMetier === stats.id}
-                  compareYtd={true}
-                  onOpenDpsRegistry={() => setIsDpsRegistryViewOpen(true)}
-                  onOpenDtDirect={() => setIsDtDirectRegistryViewOpen(true)}
-                  onOpenReseauRegistry={() => setIsReseauRegistryViewOpen(true)}
-                  onOpenUrgenceRegistry={() => setIsUrgenceRegistryViewOpen(true)}
-                  onOpenFormationRegistry={() => setIsFormationRegistryViewOpen(true)}
-                />
-              );
-            })}
-          </div>
-        </section>
+              {/* Cards list for Metiers */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {metierStats.map((stats) => {
+                  const ytdStats = ytdMetierStats.find(y => y.id === stats.id) || stats;
+                  return (
+                    <MetricCard
+                      key={stats.id}
+                      stats={ytdStats}
+                      onSelect={() => setSelectedMetier(stats.id)}
+                      isSelected={selectedMetier === stats.id}
+                      compareYtd={true}
+                      onOpenDpsRegistry={() => setIsDpsRegistryViewOpen(true)}
+                      onOpenDtDirect={() => setIsDtDirectRegistryViewOpen(true)}
+                      onOpenReseauRegistry={() => setIsReseauRegistryViewOpen(true)}
+                      onOpenUrgenceRegistry={() => setIsUrgenceRegistryViewOpen(true)}
+                      onOpenFormationRegistry={() => setIsFormationRegistryViewOpen(true)}
+                    />
+                  );
+                })}
+              </div>
+            </section>
 
-        {/* Section 2 : Charts & Dynamic YoY analyses */}
-        <section id="charts-and-historical">
-          <ChartsView 
-            stats={selectedStats} 
-            dpsRows={dpsRows} 
-            dtDirectRows={dtDirectRows}
-            reseauRows={reseauRows}
-            urgenceRows={urgenceRows}
-            formationRows={formationRows}
-            compareYtd={compareYtd}
-            setCompareYtd={setCompareYtd}
-            selectedAnalysisYear={selectedAnalysisYear}
-            setSelectedAnalysisYear={setSelectedAnalysisYear}
-          />
-        </section>
+            {/* Section 2 : Charts & Dynamic YoY analyses */}
+            <section id="charts-and-historical">
+              <ChartsView 
+                stats={selectedStats} 
+                dpsRows={dpsRows} 
+                dtDirectRows={dtDirectRows}
+                reseauRows={reseauRows}
+                urgenceRows={urgenceRows}
+                formationRows={formationRows}
+                compareYtd={compareYtd}
+                setCompareYtd={setCompareYtd}
+                selectedAnalysisYear={selectedAnalysisYear}
+                setSelectedAnalysisYear={setSelectedAnalysisYear}
+              />
+            </section>
 
-        {/* Section 3 : Strategic 4-year projection goals target */}
-        <section id="strategic-four-year-vision">
-          <StrategicGoals
-            goals={strategicGoals}
-            selectedCategory={selectedMetier}
-            onUpdateProgress={handleUpdateStrategicProgress}
-            onUpdateFullVal={handleUpdateStrategicFullVal}
-            dpsRows={dpsRows}
-            dtDirectRows={dtDirectRows}
-            reseauRows={reseauRows}
-            formationRows={formationRows}
-          />
-        </section>
-
-        {/* Section 5 : Lot 2 preview (Activités Sociales) */}
-        <section id="social-activities-teaser-lot2">
-          <SocialActivitiesTeaser />
-        </section>
+            {/* Section 3 : Strategic 4-year projection goals target */}
+            <section id="strategic-four-year-vision">
+              <StrategicGoals
+                goals={strategicGoals}
+                selectedCategory={selectedMetier}
+                onUpdateProgress={handleUpdateStrategicProgress}
+                onUpdateFullVal={handleUpdateStrategicFullVal}
+                dpsRows={dpsRows}
+                dtDirectRows={dtDirectRows}
+                reseauRows={reseauRows}
+                formationRows={formationRows}
+              />
+            </section>
+          </>
+        ) : (
+          /* Section 5 : Lot 2 preview (Activités Sociales) */
+          <section id="social-activities-teaser-lot2">
+            <SocialActivitiesTeaser />
+          </section>
+        )}
 
       </main>
 

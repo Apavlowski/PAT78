@@ -198,10 +198,47 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
     setTimeout(() => setFeedbackMsg(''), 4500);
   };
 
-  const toggleMedicalised = (index: number) => {
+  // Helper to parse date to timestamp for reliable chronological sorting
+  const parseDateToTimestamp = (dateStr?: string): number => {
+    if (!dateStr) return 0;
+    const trimmed = dateStr.trim();
+    
+    // YYYY-MM-DD
+    const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+    if (isoMatch) {
+      const [_, year, month, day, hr, min] = isoMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    // DD/MM/YYYY
+    const frMatch = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+    if (frMatch) {
+      const [_, day, month, year, hr, min] = frMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    const ts = Date.parse(trimmed);
+    return isNaN(ts) ? 0 : ts;
+  };
+
+  const toggleMedicalised = (row: ParsedDtDirectRow) => {
     if (!dtDirectRows) return;
     const copied = [...dtDirectRows];
-    const current = copied[index];
+    const originalIndex = copied.findIndex(r => r === row);
+    if (originalIndex === -1) return;
+    const current = copied[originalIndex];
     current.isMedicalise = !current.isMedicalise;
     current.devisCrss = current.isMedicalise ? "Médecin / Infirmier SSU" : "";
     setDtDirectRows(copied);
@@ -265,23 +302,32 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
 
   if (!isOpen) return null;
 
-  const filteredRows = dtDirectRows ? dtDirectRows.filter(row => {
-    let matchesPeriod = true;
-    if (filterPeriod !== 'all') {
-      const year = row.date ? String(getYearFromDateString(row.date)) : '';
-      matchesPeriod = year === filterPeriod;
-    }
+  // Filter and sort chronologically ascending
+  const filteredRows = React.useMemo(() => {
+    if (!dtDirectRows) return [];
+    const filtered = dtDirectRows.filter(row => {
+      let matchesPeriod = true;
+      if (filterPeriod !== 'all') {
+        const year = row.date ? String(getYearFromDateString(row.date)) : '';
+        matchesPeriod = year === filterPeriod;
+      }
 
-    const matchesMed = filterMed === 'all' || 
-      (filterMed === 'medicalise' && row.isMedicalise) ||
-      (filterMed === 'non_medicalise' && !row.isMedicalise);
+      const matchesMed = filterMed === 'all' || 
+        (filterMed === 'medicalise' && row.isMedicalise) ||
+        (filterMed === 'non_medicalise' && !row.isMedicalise);
 
-    const matchesSearch = searchQuery === '' || 
-      row.label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
-      row.devisCrss.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = searchQuery === '' || 
+        row.label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchQuery.toLowerCase()) ||
+        row.devisCrss.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesMed && matchesSearch && matchesPeriod;
-  }) : [];
+      return matchesMed && matchesSearch && matchesPeriod;
+    });
+
+    // Sort chronologically ascending
+    return filtered.sort((a, b) => {
+      return parseDateToTimestamp(a.date) - parseDateToTimestamp(b.date);
+    });
+  }, [dtDirectRows, filterMed, filterPeriod, searchQuery]);
 
   // Financial aggregates
   const totalDevisSum = filteredRows.reduce((s, r) => s + r.devisSecours, 0);
@@ -575,7 +621,7 @@ export const DtDirectRegistryView: React.FC<DtDirectRegistryViewProps> = ({
                             <td className="p-3 text-center">
                               <button
                                 type="button"
-                                onClick={() => toggleMedicalised(idx)}
+                                onClick={() => toggleMedicalised(row)}
                                 className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded cursor-pointer transition border hover:opacity-85 ${
                                   row.isMedicalise
                                     ? 'text-indigo-700 bg-indigo-50 border-indigo-200'

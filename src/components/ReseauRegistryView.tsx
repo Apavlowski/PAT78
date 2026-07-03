@@ -98,10 +98,47 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
     setTimeout(() => setFeedbackMsg(''), 4500);
   };
 
-  const toggleGardeDuree = (index: number) => {
+  // Helper to parse date to timestamp for reliable chronological sorting
+  const parseDateToTimestamp = (dateStr?: string): number => {
+    if (!dateStr) return 0;
+    const trimmed = dateStr.trim();
+    
+    // YYYY-MM-DD
+    const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+    if (isoMatch) {
+      const [_, year, month, day, hr, min] = isoMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    // DD/MM/YYYY
+    const frMatch = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+    if (frMatch) {
+      const [_, day, month, year, hr, min] = frMatch;
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        hr ? parseInt(hr, 10) : 0,
+        min ? parseInt(min, 10) : 0
+      ).getTime();
+    }
+
+    const ts = Date.parse(trimmed);
+    return isNaN(ts) ? 0 : ts;
+  };
+
+  const toggleGardeDuree = (row: ParsedReseauRow) => {
     if (!reseauRows) return;
     const copied = [...reseauRows];
-    const current = copied[index];
+    const originalIndex = copied.findIndex(r => r === row);
+    if (originalIndex === -1) return;
+    const current = copied[originalIndex];
     current.duree = current.duree === 12 ? 24 : 12;
     current.heuresBenevolat = current.duree * CONSTANT_SECOURISTES_PAR_GARDE;
     setReseauRows(copied);
@@ -149,19 +186,28 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
     setTimeout(() => setFeedbackMsg(''), 3000);
   };
 
-  const filteredRows = reseauRows ? reseauRows.filter(row => {
-    let matchesPeriod = true;
-    if (filterPeriod !== 'all') {
-      const year = row.date ? String(getYearFromDateString(row.date)) : '';
-      matchesPeriod = year === filterPeriod;
-    }
+  // Filter and sort chronologically ascending
+  const filteredRows = React.useMemo(() => {
+    if (!reseauRows) return [];
+    const filtered = reseauRows.filter(row => {
+      let matchesPeriod = true;
+      if (filterPeriod !== 'all') {
+        const year = row.date ? String(getYearFromDateString(row.date)) : '';
+        matchesPeriod = year === filterPeriod;
+      }
 
-    const matchesSearch = searchQuery === '' || 
-      row.date.includes(searchQuery) || 
-      formatDateToFR(row.date).includes(searchQuery);
+      const matchesSearch = searchQuery === '' || 
+        row.date.includes(searchQuery) || 
+        formatDateToFR(row.date).includes(searchQuery);
 
-    return matchesPeriod && matchesSearch;
-  }) : [];
+      return matchesPeriod && matchesSearch;
+    });
+
+    // Sort chronologically ascending by date
+    return filtered.sort((a, b) => {
+      return parseDateToTimestamp(a.date) - parseDateToTimestamp(b.date);
+    });
+  }, [reseauRows, filterPeriod, searchQuery]);
 
   // Key Aggregating KPIs
   const totalGuards = filteredRows.length;
@@ -372,7 +418,7 @@ export const ReseauRegistryView: React.FC<ReseauRegistryViewProps> = ({
                             <td className="p-3 text-center">
                               <button
                                 type="button"
-                                onClick={() => toggleGardeDuree(idx)}
+                                onClick={() => toggleGardeDuree(row)}
                                 className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 cursor-pointer"
                                 title="Cliquez pour permuter entre 12h et 24h"
                               >
