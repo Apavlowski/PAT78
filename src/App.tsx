@@ -514,8 +514,10 @@ export default function App() {
       }
       yearsData[yr].rows.push(r);
       
-      const totalSe = r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions;
-      const totalHe = r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures;
+      const extraSe = r.extraFormations ? r.extraFormations.reduce((sum, ef) => sum + ef.sessions, 0) : 0;
+      const extraHe = r.extraFormations ? r.extraFormations.reduce((sum, ef) => sum + ef.heures, 0) : 0;
+      const totalSe = r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions + extraSe;
+      const totalHe = r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures + extraHe;
 
       const scaleMultiplier = compareYtd ? 0.44 : 1.0;
 
@@ -725,8 +727,10 @@ export default function App() {
       }
       yearsData[yr].rows.push(r);
       
-      const totalSe = r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions;
-      const totalHe = r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures;
+      const extraSe2 = r.extraFormations ? r.extraFormations.reduce((sum, ef) => sum + ef.sessions, 0) : 0;
+      const extraHe2 = r.extraFormations ? r.extraFormations.reduce((sum, ef) => sum + ef.heures, 0) : 0;
+      const totalSe = r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions + extraSe2;
+      const totalHe = r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures + extraHe2;
 
       const scaleMultiplier = 0.44;
 
@@ -2071,7 +2075,7 @@ export default function App() {
                           : 'border-transparent text-slate-550 hover:text-slate-800'
                       }`}
                     >
-                      Formations Grand Public
+                      Formations
                     </button>
                     <button
                       id="tab-import-annual"

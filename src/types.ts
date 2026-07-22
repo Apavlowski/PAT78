@@ -117,6 +117,13 @@ export interface ParsedUrgenceRow {
   isAlreadyKnown?: boolean;
 }
 
+export interface ExtraFormationItem {
+  title: string;
+  sessions: number;
+  stagiaires: number;
+  heures: number;
+}
+
 export interface ParsedFormationPublicRow {
   ul: string;
   year: number;
@@ -135,6 +142,7 @@ export interface ParsedFormationPublicRow {
   recyclageSessions: number;
   recyclageStagiaires: number;
   recyclageHeures: number;
+  extraFormations?: ExtraFormationItem[];
   isAlreadyKnown?: boolean;
 }
 

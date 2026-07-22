@@ -36,6 +36,7 @@ interface FormationRegistryViewProps {
 }
 
 const DEFAULT_UL_OPTIONS = [
+  "78 - DT",
   "78 - Chevreuse",
   "78 - Saint Quentin en Yvelines",
   "78 - Les Mureaux",
@@ -174,10 +175,21 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
     });
   }, [formationRows, searchTerm, selectedYearFilter]);
 
+  const extraFormationTitles = useMemo(() => {
+    if (!formationRows) return [];
+    const set = new Set<string>();
+    formationRows.forEach(r => {
+      r.extraFormations?.forEach(ef => {
+        if (ef.title) set.add(ef.title);
+      });
+    });
+    return Array.from(set);
+  }, [formationRows]);
+
   // Aggregate stats
-  const aggSessions = filteredRows.reduce((sum, r) => sum + r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions, 0);
-  const aggStagiaires = filteredRows.reduce((sum, r) => sum + r.epscStagiaires + r.pscStagiaires + r.ipsenStagiaires + r.gqsStagiaires + r.recyclageStagiaires, 0);
-  const aggHeures = filteredRows.reduce((sum, r) => sum + r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures, 0);
+  const aggSessions = filteredRows.reduce((sum, r) => sum + r.epscSessions + r.pscSessions + r.ipsenSessions + r.gqsSessions + r.recyclageSessions + (r.extraFormations?.reduce((s, ef) => s + ef.sessions, 0) || 0), 0);
+  const aggStagiaires = filteredRows.reduce((sum, r) => sum + r.epscStagiaires + r.pscStagiaires + r.ipsenStagiaires + r.gqsStagiaires + r.recyclageStagiaires + (r.extraFormations?.reduce((s, ef) => s + ef.stagiaires, 0) || 0), 0);
+  const aggHeures = filteredRows.reduce((sum, r) => sum + r.epscHeures + r.pscHeures + r.ipsenHeures + r.gqsHeures + r.recyclageHeures + (r.extraFormations?.reduce((s, ef) => s + ef.heures, 0) || 0), 0);
 
   if (!isOpen) return null;
 
@@ -194,7 +206,7 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
             <div>
               <h3 className="text-base font-extrabold tracking-tight">Registre des Formations locales</h3>
               <p className="text-[11px] text-slate-400 font-medium">
-                Saisie, vérification et consolidation du volume de formations Grand Public des Yvelines
+                Saisie, vérification et consolidation du volume de formations des Yvelines
               </p>
             </div>
           </div>
@@ -442,6 +454,9 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
                       <th className="p-3 text-center bg-purple-50/20 border-r border-slate-200" colSpan={3}>IPS & IPSEN</th>
                       <th className="p-3 text-center bg-amber-50/20 border-r border-slate-200" colSpan={3}>GQS</th>
                       <th className="p-3 text-center bg-emerald-50/20 border-r border-slate-200" colSpan={3}>Recyclage</th>
+                      {extraFormationTitles.map((title, idx) => (
+                        <th key={idx} className="p-3 text-center bg-teal-50/20 border-r border-slate-200" colSpan={3}>{title}</th>
+                      ))}
                       <th className="p-3 text-center">Action</th>
                     </tr>
                     <tr className="border-b border-slate-200 text-slate-500 font-semibold text-[9px] bg-slate-50">
@@ -457,6 +472,13 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
                       <th className="p-2 text-center bg-amber-50/10">Se</th><th className="p-2 text-center bg-amber-50/10">St</th><th className="p-2 text-center bg-amber-50/10 border-r border-slate-200">He</th>
                       {/* recyclage */}
                       <th className="p-2 text-center bg-emerald-50/10">Se</th><th className="p-2 text-center bg-emerald-50/10">St</th><th className="p-2 text-center bg-emerald-50/10 border-r border-slate-200">He</th>
+                      {extraFormationTitles.map((_, idx) => (
+                        <React.Fragment key={idx}>
+                          <th className="p-2 text-center bg-teal-50/10">Se</th>
+                          <th className="p-2 text-center bg-teal-50/10">St</th>
+                          <th className="p-2 text-center bg-teal-50/10 border-r border-slate-200">He</th>
+                        </React.Fragment>
+                      ))}
                       <th className="p-2 text-center"></th>
                     </tr>
                   </thead>
@@ -497,6 +519,18 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
                           <td className="p-2 text-center text-slate-600">{row.recyclageStagiaires || '-'}</td>
                           <td className="p-2 text-center text-slate-500 font-mono border-r border-slate-200">{row.recyclageHeures ? `${row.recyclageHeures}h` : '-'}</td>
                           
+                          {/* Extra Formations */}
+                          {extraFormationTitles.map((title, idx) => {
+                            const ef = row.extraFormations?.find(f => f.title === title);
+                            return (
+                              <React.Fragment key={idx}>
+                                <td className="p-2 text-center font-semibold text-slate-804">{ef?.sessions || '-'}</td>
+                                <td className="p-2 text-center text-slate-600">{ef?.stagiaires || '-'}</td>
+                                <td className="p-2 text-center text-slate-500 font-mono border-r border-slate-200">{ef?.heures ? `${ef.heures}h` : '-'}</td>
+                              </React.Fragment>
+                            );
+                          })}
+                          
                           {/* Delete */}
                           <td className="p-3 text-center">
                             <button
@@ -525,7 +559,7 @@ export const FormationRegistryView: React.FC<FormationRegistryViewProps> = ({
 
         {/* Footer */}
         <div className="bg-slate-50 p-4 border-t border-slate-200 flex items-center justify-between rounded-b-xl text-xs text-slate-500">
-          <span className="font-mono">Registre Formation Grand Public — 78</span>
+          <span className="font-mono">Registre Formations — 78</span>
           <button
             type="button"
             onClick={onClose}

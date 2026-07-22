@@ -157,22 +157,33 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
   const totalLoadedSessions = React.useMemo(() => {
     if (!parsedFormationRows) return 0;
     return parsedFormationRows.reduce((acc, curr) => 
-      acc + curr.epscSessions + curr.pscSessions + curr.ipsenSessions + curr.gqsSessions + curr.recyclageSessions, 0
+      acc + curr.epscSessions + curr.pscSessions + curr.ipsenSessions + curr.gqsSessions + curr.recyclageSessions + (curr.extraFormations?.reduce((sum, ef) => sum + ef.sessions, 0) || 0), 0
     );
   }, [parsedFormationRows]);
 
   const totalLoadedStagiaires = React.useMemo(() => {
     if (!parsedFormationRows) return 0;
     return parsedFormationRows.reduce((acc, curr) => 
-      acc + curr.epscStagiaires + curr.pscStagiaires + curr.ipsenStagiaires + curr.gqsStagiaires + curr.recyclageStagiaires, 0
+      acc + curr.epscStagiaires + curr.pscStagiaires + curr.ipsenStagiaires + curr.gqsStagiaires + curr.recyclageStagiaires + (curr.extraFormations?.reduce((sum, ef) => sum + ef.stagiaires, 0) || 0), 0
     );
   }, [parsedFormationRows]);
 
   const totalLoadedHeures = React.useMemo(() => {
     if (!parsedFormationRows) return 0;
     return parsedFormationRows.reduce((acc, curr) => 
-      acc + curr.epscHeures + curr.pscHeures + curr.ipsenHeures + curr.gqsHeures + curr.recyclageHeures, 0
+      acc + curr.epscHeures + curr.pscHeures + curr.ipsenHeures + curr.gqsHeures + curr.recyclageHeures + (curr.extraFormations?.reduce((sum, ef) => sum + ef.heures, 0) || 0), 0
     );
+  }, [parsedFormationRows]);
+
+  const extraFormationTitles = React.useMemo(() => {
+    if (!parsedFormationRows) return [];
+    const set = new Set<string>();
+    parsedFormationRows.forEach(r => {
+      r.extraFormations?.forEach(ef => {
+        if (ef.title) set.add(ef.title);
+      });
+    });
+    return Array.from(set);
   }, [parsedFormationRows]);
 
   // Safe numerical cells parser
@@ -276,48 +287,169 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
         }
         setTargetYear(detectedYear);
 
-        const loadedRows: ParsedFormationPublicRow[] = [];
-        
-        // Scan for rows starting with "78" or looking like UL rows
-        for (let idx = 0; idx < rawRows.length; idx++) {
-          const row = rawRows[idx];
-          if (!row || row.length === 0) continue;
-          
-          const maybeUlName = String(row[0] || '').trim();
-          if (maybeUlName.startsWith("78") || maybeUlName.includes("Chevreuse") || maybeUlName.includes("Saint Quentin") || maybeUlName.includes("Mureaux")) {
-            // This is a data row!
-            loadedRows.push({
-              ul: maybeUlName,
-              year: detectedYear,
-              epscSessions: parseNum(row[1]),
-              epscStagiaires: parseNum(row[2]),
-              epscHeures: parseNum(row[3]),
-              pscSessions: parseNum(row[4]),
-              pscStagiaires: parseNum(row[5]),
-              pscHeures: parseNum(row[6]),
-              ipsenSessions: parseNum(row[7]),
-              ipsenStagiaires: parseNum(row[8]),
-              ipsenHeures: parseNum(row[9]),
-              gqsSessions: parseNum(row[10]),
-              gqsStagiaires: parseNum(row[11]),
-              gqsHeures: parseNum(row[12]),
-              recyclageSessions: parseNum(row[13]),
-              recyclageStagiaires: parseNum(row[14]),
-              recyclageHeures: parseNum(row[15]),
-              isAlreadyKnown: existingFormationRows?.some(existing => existing.ul === maybeUlName && existing.year === detectedYear)
-            });
+        // 1. Locate sub-header row index (contains "sessions", "stagiaires", "heures", etc.)
+        let subHeaderRowIdx = -1;
+        for (let rIndex = 0; rIndex < Math.min(6, rawRows.length); rIndex++) {
+          const rowVals = rawRows[rIndex];
+          if (!rowVals) continue;
+          const rowStr = rowVals.map(v => String(v || '').toLowerCase()).join(' ');
+          if (rowStr.includes('session') || rowStr.includes('stagiaire') || rowStr.includes('heure')) {
+            subHeaderRowIdx = rIndex;
+            break;
           }
         }
 
+        if (subHeaderRowIdx === -1) {
+          subHeaderRowIdx = 1; // Default fallback to row 1
+        }
+
+        const titleRowIdx = subHeaderRowIdx > 0 ? subHeaderRowIdx - 1 : 0;
+        const dataStartRowIdx = subHeaderRowIdx + 1;
+
+        // 2. Scan title row and subheaders to detect formation column blocks
+        const titleRow = rawRows[titleRowIdx] || [];
+        const subHeaderRow = rawRows[subHeaderRowIdx] || [];
+        
+        let maxCols = Math.max(titleRow.length, subHeaderRow.length);
+        for (let r = dataStartRowIdx; r < Math.min(dataStartRowIdx + 15, rawRows.length); r++) {
+          if (rawRows[r]) maxCols = Math.max(maxCols, rawRows[r].length);
+        }
+
+        interface FormationBlock {
+          colIndex: number;
+          title: string;
+          key: 'epsc' | 'psc' | 'ipsen' | 'gqs' | 'recyclage' | 'extra';
+        }
+
+        const blocks: FormationBlock[] = [];
+        let colIndex = 1; // Column 0 is structure name
+
+        while (colIndex < maxCols) {
+          let rawTitle = '';
+          // Check merged or surrounding cells in titleRow
+          for (let offset = 0; offset <= 2; offset++) {
+            const val = String(titleRow[colIndex + offset] || '').trim();
+            if (val && !/^(structure|unité|unite|année|annee|202\d|203\d)$/i.test(val)) {
+              rawTitle = val;
+              break;
+            }
+          }
+
+          if (!rawTitle && colIndex > 0) {
+            const val = String(titleRow[colIndex - 1] || '').trim();
+            if (val && !/^(structure|unité|unite|année|annee|202\d|203\d)$/i.test(val)) {
+              rawTitle = val;
+            }
+          }
+
+          const lowerTitle = rawTitle.toLowerCase();
+          let key: 'epsc' | 'psc' | 'ipsen' | 'gqs' | 'recyclage' | 'extra' = 'extra';
+
+          if (lowerTitle.includes('epsc') || lowerTitle.includes('elearning') || lowerTitle.includes('e-learning')) {
+            key = 'epsc';
+          } else if (lowerTitle.includes('ipsen') || lowerTitle.includes('ips')) {
+            key = 'ipsen';
+          } else if (lowerTitle.includes('gqs') || lowerTitle.includes('gestes')) {
+            key = 'gqs';
+          } else if (lowerTitle.includes('recyclage')) {
+            key = 'recyclage';
+          } else if (lowerTitle.includes('psc')) {
+            key = 'psc';
+          } else if (!rawTitle) {
+            // Default position fallback if row 0 cell was completely unlabelled
+            const bIdx = blocks.length;
+            if (bIdx === 0) key = 'epsc';
+            else if (bIdx === 1) key = 'psc';
+            else if (bIdx === 2) key = 'ipsen';
+            else if (bIdx === 3) key = 'gqs';
+            else if (bIdx === 4) key = 'recyclage';
+          }
+
+          const displayTitle = rawTitle || (key === 'epsc' ? 'ePSC' : key === 'psc' ? 'PSC' : key === 'ipsen' ? 'IPSEN' : key === 'gqs' ? 'GQS' : key === 'recyclage' ? 'Recyclage PSC' : `Formation ${blocks.length + 1}`);
+
+          blocks.push({
+            colIndex,
+            title: displayTitle,
+            key
+          });
+
+          colIndex += 3;
+        }
+
+        // 3. Scan structure data rows starting from dataStartRowIdx
+        const loadedRows: ParsedFormationPublicRow[] = [];
+
+        for (let idx = dataStartRowIdx; idx < rawRows.length; idx++) {
+          const row = rawRows[idx];
+          if (!row || row.length === 0) continue;
+
+          const rawUlName = String(row[0] || '').trim();
+          if (!rawUlName) continue;
+
+          const lowerUl = rawUlName.toLowerCase();
+          // Permissive structure filter: skip headers & totals
+          if (
+            lowerUl.includes('total') || 
+            lowerUl.includes('totaux') || 
+            lowerUl === 'structure' || 
+            lowerUl === 'unité locale' || 
+            lowerUl === 'unite locale' || 
+            lowerUl === 'année' || 
+            lowerUl === 'annee' || 
+            /^\d{4}$/.test(lowerUl)
+          ) {
+            continue;
+          }
+
+          const rowData: ParsedFormationPublicRow = {
+            ul: rawUlName,
+            year: detectedYear,
+            epscSessions: 0, epscStagiaires: 0, epscHeures: 0,
+            pscSessions: 0, pscStagiaires: 0, pscHeures: 0,
+            ipsenSessions: 0, ipsenStagiaires: 0, ipsenHeures: 0,
+            gqsSessions: 0, gqsStagiaires: 0, gqsHeures: 0,
+            recyclageSessions: 0, recyclageStagiaires: 0, recyclageHeures: 0,
+            extraFormations: [],
+            isAlreadyKnown: existingFormationRows?.some(existing => existing.ul.toLowerCase() === rawUlName.toLowerCase() && existing.year === detectedYear)
+          };
+
+          for (const block of blocks) {
+            const se = parseNum(row[block.colIndex]);
+            const st = parseNum(row[block.colIndex + 1]);
+            const he = parseNum(row[block.colIndex + 2]);
+
+            if (block.key === 'epsc') {
+              rowData.epscSessions += se; rowData.epscStagiaires += st; rowData.epscHeures += he;
+            } else if (block.key === 'psc') {
+              rowData.pscSessions += se; rowData.pscStagiaires += st; rowData.pscHeures += he;
+            } else if (block.key === 'ipsen') {
+              rowData.ipsenSessions += se; rowData.ipsenStagiaires += st; rowData.ipsenHeures += he;
+            } else if (block.key === 'gqs') {
+              rowData.gqsSessions += se; rowData.gqsStagiaires += st; rowData.gqsHeures += he;
+            } else if (block.key === 'recyclage') {
+              rowData.recyclageSessions += se; rowData.recyclageStagiaires += st; rowData.recyclageHeures += he;
+            } else {
+              rowData.extraFormations!.push({
+                title: block.title,
+                sessions: se,
+                stagiaires: st,
+                heures: he
+              });
+            }
+          }
+
+          loadedRows.push(rowData);
+        }
+
         if (loadedRows.length === 0) {
-          throw new Error("Aucune ligne de structure éligible (ex: commençant par '78') n'a été détectée.");
+          throw new Error("Aucune structure reconnue dans le fichier.");
         }
 
         setFileName(file.name);
         setParsedFormationRows(loadedRows);
         setImportStatus({
           type: 'success',
-          message: `Fichier analysé : ${loadedRows.length} structures repérées pour l'année ${detectedYear} !`
+          message: `Fichier analysé : ${loadedRows.length} structures repérées (${blocks.length} modules de formation détectés) pour l'année ${detectedYear} !`
         });
 
       } catch (err: any) {
@@ -388,7 +520,7 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
             <GraduationCap className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-850">Chargement des Formations Grand Public</h4>
+            <h4 className="text-sm font-bold text-slate-850">Chargement des Formations</h4>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               Importez les bilans des formations portées par les structures locales (Unités Locales) des Yvelines. 
               Cet outil intègre les sessions dispensées pour chaque formation éligible : <b>ePSC</b>, <b>PSC</b>, <b>IPSEN</b>, <b>GQS</b> et <b>recyclage PSC</b>.
@@ -545,10 +677,13 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
                   <th className="p-2.5 text-center bg-indigo-50/40 border-r border-slate-200" colSpan={3}>PSC1 (Présentiel)</th>
                   <th className="p-2.5 text-center bg-purple-50/40 border-r border-slate-200" colSpan={3}>IPS & IPSEN</th>
                   <th className="p-2.5 text-center bg-amber-50/40 border-r border-slate-200" colSpan={3}>GQS</th>
-                  <th className="p-2.5 text-center bg-emerald-50/40" colSpan={3}>Recyclage PSC</th>
+                  <th className="p-2.5 text-center bg-emerald-50/40 border-r border-slate-200" colSpan={3}>Recyclage PSC</th>
+                  {extraFormationTitles.map((title, idx) => (
+                    <th key={idx} className="p-2.5 text-center bg-teal-50/40 border-r border-slate-200" colSpan={3}>{title}</th>
+                  ))}
                 </tr>
                 <tr className="border-b border-slate-200 text-slate-500 font-semibold text-[9px]">
-                  <th className="p-2 pl-4 sticky left-0 bg-slate-100 z-10 border-r border-slate-200">Unité Locale</th>
+                  <th className="p-2 pl-4 sticky left-0 bg-slate-100 z-10 border-r border-slate-200">Unité Locale / DT</th>
                   {/* ePSC */}
                   <th className="p-2 text-center bg-blue-50/20">Se</th><th className="p-2 text-center bg-blue-50/20">St</th><th className="p-2 text-center bg-blue-50/20 border-r border-slate-205">He</th>
                   {/* PSC */}
@@ -558,12 +693,20 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
                   {/* GQS */}
                   <th className="p-2 text-center bg-amber-50/20">Se</th><th className="p-2 text-center bg-amber-50/20">St</th><th className="p-2 text-center bg-amber-50/20 border-r border-slate-205">He</th>
                   {/* recyclage */}
-                  <th className="p-2 text-center bg-emerald-50/20">Se</th><th className="p-2 text-center bg-emerald-50/20">St</th><th className="p-2 text-center bg-emerald-50/20">He</th>
+                  <th className="p-2 text-center bg-emerald-50/20">Se</th><th className="p-2 text-center bg-emerald-50/20">St</th><th className="p-2 text-center bg-emerald-50/20 border-r border-slate-200">He</th>
+                  {extraFormationTitles.map((_, idx) => (
+                    <React.Fragment key={idx}>
+                      <th className="p-2 text-center bg-teal-50/20">Se</th>
+                      <th className="p-2 text-center bg-teal-50/20">St</th>
+                      <th className="p-2 text-center bg-teal-50/20 border-r border-slate-200">He</th>
+                    </React.Fragment>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-150">
                 {parsedFormationRows.map((row, i) => {
-                  const subTotalSe = row.epscSessions + row.pscSessions + row.ipsenSessions + row.gqsSessions + row.recyclageSessions;
+                  const extraSe = row.extraFormations ? row.extraFormations.reduce((sum, ef) => sum + ef.sessions, 0) : 0;
+                  const subTotalSe = row.epscSessions + row.pscSessions + row.ipsenSessions + row.gqsSessions + row.recyclageSessions + extraSe;
                   const isVoid = subTotalSe === 0;
 
                   return (
@@ -597,7 +740,19 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
                       {/* recyclage */}
                       <td className="p-2 text-center font-semibold text-slate-800">{row.recyclageSessions || '-'}</td>
                       <td className="p-2 text-center text-slate-600">{row.recyclageStagiaires || '-'}</td>
-                      <td className="p-2 text-center text-slate-500 font-mono">{row.recyclageHeures ? `${row.recyclageHeures} h` : '-'}</td>
+                      <td className="p-2 text-center text-slate-500 font-mono border-r border-slate-200">{row.recyclageHeures ? `${row.recyclageHeures} h` : '-'}</td>
+
+                      {/* Extra Formations */}
+                      {extraFormationTitles.map((title, idx) => {
+                        const ef = row.extraFormations?.find(f => f.title === title);
+                        return (
+                          <React.Fragment key={idx}>
+                            <td className="p-2 text-center font-semibold text-slate-800">{ef?.sessions || '-'}</td>
+                            <td className="p-2 text-center text-slate-600">{ef?.stagiaires || '-'}</td>
+                            <td className="p-2 text-center text-slate-500 font-mono border-r border-slate-200">{ef?.heures ? `${ef.heures} h` : '-'}</td>
+                          </React.Fragment>
+                        );
+                      })}
                     </tr>
                   );
                 })}
@@ -626,7 +781,7 @@ export const FormationLoader: React.FC<FormationLoaderProps> = ({
       <div className="p-4 bg-slate-100 border border-slate-200 rounded-xl text-xs text-slate-600 space-y-2 leading-relaxed">
         <div className="flex items-center gap-1.5 text-slate-800 font-bold">
           <Award className="w-3.5 h-3.5 text-amber-600" />
-          <span>Informations sur le Référentiel Grand Public</span>
+          <span>Informations sur le Référentiel des Formations</span>
         </div>
         <ul className="list-disc pl-4 space-y-1 text-slate-500 text-[11px]">
           <li><b>ePSC</b> : Format mixte combinant apprentissage en ligne (e-learning) et mise en situation pratique.</li>

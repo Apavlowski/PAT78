@@ -40,7 +40,7 @@ export const INITIAL_METIER_STATS: MetierStats[] = [
   {
     id: 'formation',
     title: 'Formation Sécurité Civile',
-    description: 'Formations grand public (PSC1, IPS) et qualifiantes pour les secouristes (PSE1, PSE2, Formateurs).',
+    description: 'Formations (ePSC, PSC1, IPS) et qualifiantes pour les secouristes.',
     iconName: 'GraduationCap',
     history: [
       { year: 2024, activitiesCount: 210, volunteerHours: 6800 },
